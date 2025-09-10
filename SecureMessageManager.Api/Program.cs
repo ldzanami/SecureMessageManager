@@ -17,6 +17,9 @@ namespace SecureMessageManager.Api
             builder.Services.AddControllers();
 
             builder.Services.AddSignalR();
+            builder.Logging.ClearProviders();
+            builder.Logging.AddConsole();
+            builder.Logging.AddDebug();
 
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen(c =>
@@ -96,7 +99,7 @@ namespace SecureMessageManager.Api
 
             app.MapControllers();
 
-            app.MapHub<ChatHub>("/chatHub");
+
 
             app.Run();
         }
