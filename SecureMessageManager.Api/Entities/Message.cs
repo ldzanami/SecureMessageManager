@@ -2,6 +2,9 @@
 
 namespace SecureMessageManager.Api.Entities
 {
+    /// <summary>
+    /// Сущность сообщения
+    /// </summary>
     public class Message
     {
         public Guid Id { get; set; } = Guid.NewGuid();
@@ -11,7 +14,7 @@ namespace SecureMessageManager.Api.Entities
         public byte[] AESKeyEnc { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public bool IsRead { get; set; }
-        public User? Sender { get; set; }
-        public User? Receiver { get; set; }
+        public User Sender { get; set; }
+        public User Receiver { get; set; }
     }
 }

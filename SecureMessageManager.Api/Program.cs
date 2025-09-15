@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using SecureMessageManager.Api.Data;
+using SecureMessageManager.Api.Repositories.Interfaces.User;
+using SecureMessageManager.Api.Repositories.User;
 using System.Text;
 
 namespace SecureMessageManager.Api
@@ -15,6 +17,10 @@ namespace SecureMessageManager.Api
 
 
             builder.Services.AddControllers();
+
+            builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                                 .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true)
+                                 .AddEnvironmentVariables();
 
             builder.Services.AddSignalR();
             builder.Logging.ClearProviders();
@@ -81,6 +87,10 @@ namespace SecureMessageManager.Api
             });
 
             builder.Services.AddAuthorization();
+
+
+            builder.Services.AddScoped<IUserRepository, UserRepository>();
+
 
             var app = builder.Build();
 
