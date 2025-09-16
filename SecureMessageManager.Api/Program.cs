@@ -9,8 +9,15 @@ using System.Text;
 
 namespace SecureMessageManager.Api
 {
+    /// <summary>
+    /// Структура приложения.
+    /// </summary>
     public class Program
     {
+        /// <summary>
+        /// Точка входа в программу.
+        /// </summary>
+        /// <param name="args">Аргументы из командной строки.</param>
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);

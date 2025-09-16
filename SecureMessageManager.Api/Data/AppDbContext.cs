@@ -3,14 +3,41 @@ using SecureMessageManager.Api.Entities;
 
 namespace SecureMessageManager.Api.Data
 {
+    /// <summary>
+    /// Контекст БД приложения.
+    /// </summary>
+    /// <param name="options">Параметры контекста.</param>
     public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
     {
+        /// <summary>
+        /// Сущность Users.
+        /// </summary>
         public DbSet<User> Users { get; set; }
+        
+        /// <summary>
+        /// Сущность Messages.
+        /// </summary>
         public DbSet<Message> Messages { get; set; }
+        
+        /// <summary>
+        /// Сущность Files.
+        /// </summary>
         public DbSet<Entities.File> Files { get; set; }
+        
+        /// <summary>
+        /// Сущность Sessions.
+        /// </summary>
         public DbSet<Session> Sessions { get; set; }
+
+        /// <summary>
+        /// Сущность Logs.
+        /// </summary>
         public DbSet<Log> Logs { get; set; }
 
+        /// <summary>
+        /// Особенности содзания схемы БД.
+        /// </summary>
+        /// <param name="modelBuilder">Объект проектировщика БД.</param>
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

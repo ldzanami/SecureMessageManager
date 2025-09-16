@@ -3,7 +3,7 @@
     /// <summary>
     /// Интерфейс сервиса для генерации JWT токенов
     /// </summary>
-    public class IJWTGeneratorService
+    public interface IJWTGeneratorService
     {
         
     }
