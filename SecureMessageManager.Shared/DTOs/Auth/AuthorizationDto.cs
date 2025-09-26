@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SecureMessageManager.Shared.DTOs.Auxiliary;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,5 +21,10 @@ namespace SecureMessageManager.Shared.DTOs.Auth
         /// Пароль пользователя.
         /// </summary>
         public string Password { get; set; }
+
+        /// <summary>
+        /// Информация об устройстве.
+        /// </summary>
+        public DeviceInfoDto DeviceInfo { get; set; }
     }
 }

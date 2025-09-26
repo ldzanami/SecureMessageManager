@@ -5,6 +5,10 @@ using Microsoft.OpenApi.Models;
 using SecureMessageManager.Api.Data;
 using SecureMessageManager.Api.Repositories.Interfaces.User;
 using SecureMessageManager.Api.Repositories.User;
+using SecureMessageManager.Api.Services.Auth;
+using SecureMessageManager.Api.Services.Encriptoin;
+using SecureMessageManager.Api.Services.Interfaces.Auth;
+using SecureMessageManager.Api.Services.Interfaces.Encription;
 using System.Text;
 
 namespace SecureMessageManager.Api
@@ -70,6 +74,7 @@ namespace SecureMessageManager.Api
                     ValidateAudience = true,
                     ValidAudience = builder.Configuration["Jwt:Audience"],
                     ValidateLifetime = true,
+                    ClockSkew = TimeSpan.Zero,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
                     ValidateIssuerSigningKey = true
                 };
@@ -97,6 +102,12 @@ namespace SecureMessageManager.Api
 
 
             builder.Services.AddScoped<IUserRepository, UserRepository>();
+            builder.Services.AddScoped<IAuthService, AuthService>();
+            builder.Services.AddScoped<IJWTGeneratorService, JWTGeneratorService>();
+            builder.Services.AddScoped<ISessionService, SessionService>();
+            builder.Services.AddScoped<ISessionRepository, SessionRepository>();
+            builder.Services.AddScoped<IGeneratorService, GeneratorService>();
+            builder.Services.AddScoped<IPasswordHashService, PasswordHashService>();
 
 
             var app = builder.Build();

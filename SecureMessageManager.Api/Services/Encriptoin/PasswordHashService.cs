@@ -1,4 +1,5 @@
 ﻿using Isopoh.Cryptography.Argon2;
+using Isopoh.Cryptography.SecureArray;
 using Microsoft.AspNetCore.DataProtection;
 using SecureMessageManager.Api.Services.Interfaces.Encription;
 
@@ -31,7 +32,12 @@ namespace SecureMessageManager.Api.Services.Encriptoin
             };
 
             using var argon2 = new Argon2(config);
-            return argon2.Hash().Buffer;
+            string hashString;
+            using (SecureArray<byte> hashA = argon2.Hash())
+            {
+                hashString = config.EncodeString(hashA.Buffer);
+            }
+            return System.Text.Encoding.UTF8.GetBytes(hashString);
         }
     }
 }

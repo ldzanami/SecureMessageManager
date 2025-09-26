@@ -7,15 +7,10 @@ using System.Threading.Tasks;
 namespace SecureMessageManager.Shared.DTOs.Auth
 {
     /// <summary>
-    /// Ответ на авторизацию.
+    /// Ответ на обновление токенов.
     /// </summary>
-    public class AuthResponseDto
+    public class RefreshDto
     {
-        /// <summary>
-        /// Id сессии.
-        /// </summary>
-        public Guid SessionId { get; set; }
-
         /// <summary>
         /// Краткосрочный токен.
         /// </summary>
@@ -27,13 +22,8 @@ namespace SecureMessageManager.Shared.DTOs.Auth
         public string RefreshToken { get; set; }
 
         /// <summary>
-        /// Id пользователя.
+        /// Id сессии.
         /// </summary>
-        public Guid UserId { get; set; }
-
-        /// <summary>
-        /// Имя пользователя.
-        /// </summary>
-        public string Username { get; set; }
+        public Guid SessionId { get; set; }
     }
 }

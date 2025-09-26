@@ -1,33 +1,26 @@
-﻿using SecureMessageManager.Shared.DTOs.Auth;
-using SecureMessageManager.Shared.DTOs.Auxiliary;
+﻿using SecureMessageManager.Api.Entities;
 
 namespace SecureMessageManager.Api.Services.Interfaces.Auth
 {
     /// <summary>
-    /// Интерфейс сервиса для управления регистрацией и авторизацией пользователей.
+    /// Интерфейс сервиса управления сессиями.
     /// </summary>
-    public interface IAuthService
+    public interface ISessionService
     {
         /// <summary>
-        /// Асинхронно регистрирует нового пользователя в системе.
+        /// Асинхронно создаёт сессию.
         /// </summary>
-        /// <param name="dto"> Данные для регистрации пользователя. </param>
-        Task<UserResponseDto> RegisterAsync(RegisterRequestDto dto);
-
-        /// <summary>
-        /// Асинхронно авторизует пользователя и выдает JWT токен.
-        /// </summary>
-        /// <param name="dto">Данные для авторизации пользователя.</param>
+        /// <param name="user">Пользователь сессии.</param>
         /// <param name="deviceInfo">Информация об устройстве.</param>
-        /// <returns>JWT токен при успешной авторизации.</returns>
-        Task<AuthResponseDto> AuthorizationAsync(AuthorizationDto dto, DeviceInfoDto deviceInfo);
+        /// <returns>access + refresh токены и id сессии.</returns>
+        Task<(string AccessToken, string RefreshToken, Guid SessionId)> CreateSessionAsync(User user, string deviceInfo);
 
         /// <summary>
-        /// Асинхронное обновление токенов.
+        /// Асинхронная ротация refresh: валидирует входной refresh, если ок — меняет на новый и отдаёт новую пару.
         /// </summary>
         /// <param name="incomingRefreshToken">Текущий refresh токен.</param>
-        /// <returns>Dto с новыми токенами.</returns>
-        Task<RefreshDto> RefreshAsync(string incomingRefreshToken);
+        /// <returns>новые access + refresh токены и id сессии.</returns>
+        Task<(string AccessToken, string RefreshToken, Guid SessionId)> RefreshAsync(string incomingRefreshToken);
 
         /// <summary>
         /// Асинхронный разлогин конкретной сессии.

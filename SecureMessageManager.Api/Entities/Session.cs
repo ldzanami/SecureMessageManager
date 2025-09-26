@@ -28,7 +28,7 @@
         public DateTime ExpiresAt { get; set; }
 
         /// <summary>
-        /// 
+        /// Отозван ли токен
         /// </summary>
         public bool IsRevoked { get; set; }
 

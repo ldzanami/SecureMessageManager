@@ -1,4 +1,5 @@
 ﻿using Isopoh.Cryptography.Argon2;
+using Isopoh.Cryptography.SecureArray;
 using Microsoft.EntityFrameworkCore;
 using SecureMessageManager.Api.Data;
 using SecureMessageManager.Api.Repositories.Interfaces.User;
@@ -8,7 +9,7 @@ namespace SecureMessageManager.Api.Repositories.User
     /// <summary>
     /// Репозиторий для работы с пользователем
     /// </summary>
-    /// <param name="context"></param>
+    /// <param name="context">Контекст БД приложения.</param>
     public class UserRepository(AppDbContext context) : IUserRepository
     {
         private readonly AppDbContext _context = context;
@@ -41,7 +42,7 @@ namespace SecureMessageManager.Api.Repositories.User
         /// <returns>true если пароль верен; иначе false.</returns>
         public bool VerifyPassword(string password, byte[] hash)
         {
-            return Argon2.Verify(hash.ToString(), password);
+            return Argon2.Verify(System.Text.Encoding.UTF8.GetString(hash), password);
         }
     }
 }
