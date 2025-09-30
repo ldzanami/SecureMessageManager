@@ -12,4 +12,12 @@
     <ProjectReference Include="..\SecureMessageManager.Shared\SecureMessageManager.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Services\Interfaces\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Management" Version="9.0.9" />
+  </ItemGroup>
+
 </Project>

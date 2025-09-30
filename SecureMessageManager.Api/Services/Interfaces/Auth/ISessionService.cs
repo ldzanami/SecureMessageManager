@@ -40,5 +40,6 @@ namespace SecureMessageManager.Api.Services.Interfaces.Auth
         /// </summary>
         /// <param name="userId">Id пользователя.</param>
         Task RevokeAllSessionsAsync(Guid userId);
+
     }
 }

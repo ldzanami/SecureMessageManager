@@ -35,7 +35,7 @@ namespace SecureMessageManager.Api.Services.Auth
         /// </summary>
         /// <param name="user">Пользователь сессии.</param>
         /// <param name="deviceInfo">Информация об устройстве.</param>
-        /// <returns>access + refresh токены и id сессии.</returns>
+        /// <returns>Access + refresh токены и id сессии.</returns>
         public async Task<(string AccessToken, string RefreshToken, Guid SessionId)> CreateSessionAsync(User user, string deviceInfo)
         {
             var access = _jwtGeneratorService.GenerateAccessToken(user, out _);
@@ -62,14 +62,14 @@ namespace SecureMessageManager.Api.Services.Auth
         /// Асинхронная ротация refresh: валидирует входной refresh, если ок — меняет на новый и отдаёт новую пару.
         /// </summary>
         /// <param name="incomingRefreshToken">Текущий refresh токен.</param>
-        /// <returns>новые access + refresh токены и id сессии.</returns>
+        /// <returns>Новые access + refresh токены и id сессии.</returns>
         /// <exception cref="UnauthorizedAccessException">Некорректный токен.</exception>
         public async Task<(string AccessToken, string RefreshToken, Guid SessionId)> RefreshAsync(string incomingRefreshToken)
         {
             var incomingHash = _jwtGeneratorService.HashToken(incomingRefreshToken);
 
             var session = await _sessionRepository.GetSessionByRefreshHashAsync(incomingHash);
-
+            
             if (session == null) throw new UnauthorizedAccessException("Refresh токен не найден");
             if (session.IsRevoked) throw new UnauthorizedAccessException("Refresh токен отозван");
             if (session.ExpiresAt <= DateTime.UtcNow) throw new UnauthorizedAccessException("Refresh токен просрочен");

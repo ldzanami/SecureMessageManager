@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using SecureMessageManager.Api.Data;
+using SecureMessageManager.Api.Middlewares;
 using SecureMessageManager.Api.Repositories.Interfaces.User;
 using SecureMessageManager.Api.Repositories.User;
 using SecureMessageManager.Api.Services.Auth;
@@ -111,6 +112,8 @@ namespace SecureMessageManager.Api
 
 
             var app = builder.Build();
+
+            app.UseMiddleware<ExceptionHandlingMiddleware>();
 
             if (app.Environment.IsDevelopment())
             {

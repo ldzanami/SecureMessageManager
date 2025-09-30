@@ -3,24 +3,24 @@ using SecureMessageManager.Api.Repositories.Interfaces.User;
 using SecureMessageManager.Api.Services.Interfaces.Auth;
 using SecureMessageManager.Api.Services.Interfaces.Encription;
 using SecureMessageManager.Shared.DTOs.Auth;
-using SecureMessageManager.Shared.DTOs.Auxiliary;
+using SecureMessageManager.Shared.DTOs.Auxiliary.DeviceInfo;
 
 namespace SecureMessageManager.Api.Services.Auth
 {
-    // TODO: при авторизации с устройства, сессия которого уже есть, просто обновить сессию.
-
     /// <summary>
     /// Сервис для управления регистрацией и авторизацией пользователей.
     /// </summary>
     public class AuthService(IUserRepository userRepository,
                              IGeneratorService generatorService,
                              IPasswordHashService passwordHashService,
-                             ISessionService sessionService) : IAuthService
+                             ISessionService sessionService,
+                             ISessionRepository sessionRepository) : IAuthService
     {
         private readonly IUserRepository _userRepository = userRepository;
         private readonly IGeneratorService _generatorService = generatorService;
         private readonly IPasswordHashService _passwordHashService = passwordHashService;
         private readonly ISessionService _sessionService = sessionService;
+        private readonly ISessionRepository _sessionRepository = sessionRepository;
 
         /// <summary>
         /// Асинхронно регистрирует нового пользователя в системе.
@@ -72,21 +72,42 @@ namespace SecureMessageManager.Api.Services.Auth
             }
 
             bool isPasswordValid = _userRepository.VerifyPassword(dto.Password, user.PasswordHash);
+
             if (!isPasswordValid)
             {
                 throw new UnauthorizedAccessException("Неверный логин или пароль.");
             }
 
-            (string accessToken, string refreshToken, Guid sesssionId) = await _sessionService.CreateSessionAsync(user, deviceInfo);
+            var session = (await _sessionRepository.GetUserSessionsAsync(user.Id)).FirstOrDefault(s => ((DeviceInfoDto)s.DeviceInfo).DeviceId == deviceInfo.DeviceId);
+
+            string accessToken, refreshToken;
+            Guid sessionId;
+
+            if (session == null)
+            {
+                (accessToken, refreshToken, sessionId) = await _sessionService.CreateSessionAsync(user, deviceInfo);
+            }
+            else if((DeviceInfoDto)session.DeviceInfo != deviceInfo)
+            {
+                await _sessionRepository.RemoveSessionAsync(session);
+                (accessToken, refreshToken, sessionId) = await _sessionService.CreateSessionAsync(user, deviceInfo);
+            }
+            else
+            {
+                session.IsRevoked = false;
+                (accessToken, refreshToken, sessionId) = await _sessionService.RefreshAsync(dto.RefreshToken);
+                await _sessionRepository.UpdateSessionAsync(session);
+            }
 
             return new AuthResponseDto
             {
-                SessionId = sesssionId,
+                SessionId = sessionId,
                 AccessToken = accessToken,
                 RefreshToken = refreshToken,
                 UserId = user.Id,
                 Username = user.Username
             };
+
         }
 
         /// <summary>

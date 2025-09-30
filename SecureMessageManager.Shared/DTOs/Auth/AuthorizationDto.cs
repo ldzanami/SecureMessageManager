@@ -1,4 +1,4 @@
-﻿using SecureMessageManager.Shared.DTOs.Auxiliary;
+﻿using SecureMessageManager.Shared.DTOs.Auxiliary.DeviceInfo;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,5 +26,10 @@ namespace SecureMessageManager.Shared.DTOs.Auth
         /// Информация об устройстве.
         /// </summary>
         public DeviceInfoDto DeviceInfo { get; set; }
+
+        /// <summary>
+        /// Refresh токен.
+        /// </summary>
+        public string? RefreshToken { get; set; }
     }
 }

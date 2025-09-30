@@ -24,37 +24,20 @@ namespace SecureMessageManager.Api.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterRequestDto dto)
         {
-            try
-            {
-                var response = await _authService.RegisterAsync(dto);
-                return Ok(response);
-            }
-            catch(InvalidOperationException e)
-            {
-                return BadRequest(e.Message);
-            }
+            return Ok(await _authService.RegisterAsync(dto));
         }
 
         /// <summary>
         /// Post запрос для авторизации пользователя.
         /// </summary>
         /// <param name="dto">Dto с данными для авторизации.</param>
-        /// <param name="deviceInfo">Dto с данными об устройстве.</param>
         /// <returns>200 если удачно;<br>400 если ошибка;</br></returns>
         [HttpPost("authorization")]
         public async Task<IActionResult> Authorization([FromBody] AuthorizationDto dto)
         {
-            try
-            {
-                var response = await _authService.AuthorizationAsync(dto, dto.DeviceInfo);
-                return Ok(response);
-            }
-            catch(UnauthorizedAccessException e)
-            {
-                return BadRequest(e.Message);
-            }
+            return Ok(await _authService.AuthorizationAsync(dto, dto.DeviceInfo));
         }
-        
+
         /// <summary>
         /// Post запрос на обновление токенов.
         /// </summary>
@@ -64,15 +47,7 @@ namespace SecureMessageManager.Api.Controllers
         [HttpPost("refresh")]
         public async Task<IActionResult> Refresh(string incomingRefreshToken)
         {
-            try
-            {
-                var response = await _authService.RefreshAsync(incomingRefreshToken);
-                return Ok(response);
-            }
-            catch(UnauthorizedAccessException e)
-            {
-                return BadRequest(e.Message);
-            }
+            return Ok(await _authService.RefreshAsync(incomingRefreshToken));
         }
 
         /// <summary>

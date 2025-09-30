@@ -1,5 +1,5 @@
 ﻿using SecureMessageManager.Shared.DTOs.Auth;
-using SecureMessageManager.Shared.DTOs.Auxiliary;
+using SecureMessageManager.Shared.DTOs.Auxiliary.DeviceInfo;
 
 namespace SecureMessageManager.Api.Services.Interfaces.Auth
 {

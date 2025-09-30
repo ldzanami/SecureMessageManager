@@ -86,5 +86,25 @@ namespace SecureMessageManager.Api.Repositories.User
             _appDbContext.UpdateRange(sessions);
             await _appDbContext.SaveChangesAsync();
         }
+
+        /// <summary>
+        /// Асинхронно получает все сессии пользователя.
+        /// </summary>
+        /// <param name="userId">Id пользователя.</param>
+        /// <returns>Коллекция всех сессий пользователя.</returns>
+        public async Task<ICollection<Session>> GetUserSessionsAsync(Guid userId)
+        {
+            return await _appDbContext.Sessions.Where(s => s.UserId == userId).ToListAsync();
+        }
+
+        /// <summary>
+        /// Асинхронно удаляет сессию.
+        /// </summary>
+        /// <param name="session">Сесиия для удаления.</param>
+        public async Task RemoveSessionAsync(Session session)
+        {
+            _appDbContext.Sessions.Remove(session);
+            await _appDbContext.SaveChangesAsync();
+        }
     }
 }

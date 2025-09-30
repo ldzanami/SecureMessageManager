@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace SecureMessageManager.Shared.DTOs.Auxiliary
+namespace SecureMessageManager.Shared.DTOs.Auxiliary.DeviceInfo
 {
     /// <summary>
     /// Данные об устройстве.
@@ -70,7 +70,7 @@ namespace SecureMessageManager.Shared.DTOs.Auxiliary
         /// <summary>
         /// разрешение основного экрана.
         /// </summary>
-        public (int Width, int Height)? ScreenResolution { get; set; }
+        public ScreenResolutionDto ScreenResolution { get; set; }
 
         /// <summary>
         /// Дата сбора данных.
@@ -104,5 +104,49 @@ namespace SecureMessageManager.Shared.DTOs.Auxiliary
                 WriteIndented = false
             });
         }
+
+        /// <summary>
+        /// Сравнивает экземпляр с объектом.
+        /// </summary>
+        /// <param name="obj">объект для сравнения.</param>
+        /// <returns>true если равны; иначе false.</returns>
+        public override bool Equals(object obj)
+        {
+            if (obj is not DeviceInfoDto other) return false;
+            return DeviceId == other.DeviceId
+                   && MachineName == other.MachineName
+                   && OSDescription == other.OSDescription
+                   && AppVersion == other.AppVersion;
+        }
+
+        /// <summary>
+        /// Получает хеш код из объекта.
+        /// </summary>
+        /// <returns>Хеш код.</returns>
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(DeviceId, MachineName, OSDescription, AppVersion);
+        }
+
+        /// <summary>
+        /// Сравнивает 2 экземпляра DeviceInfoDto
+        /// </summary>
+        /// <param name="a">Экземпляр DeviceInfoDto.</param>
+        /// <param name="b">Экземпляр DeviceInfoDto.</param>
+        /// <returns>true если равны; иначе false.</returns>
+        public static bool operator ==(DeviceInfoDto a, DeviceInfoDto b)
+        {
+            if (ReferenceEquals(a, b)) return true;
+            if (a is null || b is null) return false;
+            return a.Equals(b);
+        }
+
+        /// <summary>
+        /// Сравнивает 2 экземпляра DeviceInfoDto
+        /// </summary>
+        /// <param name="a">Экземпляр DeviceInfoDto.</param>
+        /// <param name="b">Экземпляр DeviceInfoDto.</param>
+        /// <returns>true если не равны; иначе false.</returns>
+        public static bool operator !=(DeviceInfoDto a, DeviceInfoDto b) => !(a == b);
     }
 }

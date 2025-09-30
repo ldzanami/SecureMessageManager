@@ -1,4 +1,5 @@
 ﻿using SecureMessageManager.Api.Entities;
+using SecureMessageManager.Api.Repositories.User;
 
 namespace SecureMessageManager.Api.Repositories.Interfaces.User
 {
@@ -53,5 +54,19 @@ namespace SecureMessageManager.Api.Repositories.Interfaces.User
         /// </summary>
         /// <param name="sessions">Коллекция сессий для обновления.</param>
         Task UpdateSessionsRangeAsync(ICollection<Session> sessions);
+        
+        /// <summary>
+        /// Асинхронно получает все сессии пользователя.
+        /// </summary>
+        /// <param name="userId">Id пользователя.</param>
+        /// <returns>Коллекция всех сессий пользователя.</returns>
+        Task<ICollection<Session>> GetUserSessionsAsync(Guid userId);
+
+        /// <summary>
+        /// Асинхронно удаляет сессию.
+        /// </summary>
+        /// <param name="session">Сесиия для удаления.</param>
+        Task RemoveSessionAsync(Session session);
+
     }
 }
