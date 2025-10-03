@@ -20,6 +20,11 @@ namespace SecureMessageManager.Api.Entities
         public required string Username { get; set; }
 
         /// <summary>
+        /// Аватар пользователя.
+        /// </summary>
+        public byte[] Icon { get; set; }
+
+        /// <summary>
         /// Имя пользователя в верхнем регистре.
         /// </summary>
         public required string UsernameNormalized { get; set; }
@@ -61,23 +66,18 @@ namespace SecureMessageManager.Api.Entities
         public ICollection<Message> SentMessages { get; set; } = new List<Message>();
 
         /// <summary>
-        /// Полученные сообщения пользователя.
-        /// </summary>
-        public ICollection<Message> ReceivedMessages { get; set; } = new List<Message>();
-
-        /// <summary>
         /// Отправленные файлы пользователя.
         /// </summary>
         public ICollection<File> SentFiles { get; set; } = new List<File>();
 
         /// <summary>
-        /// Полученные файлы пользователя.
-        /// </summary>
-        public ICollection<File> ReceivedFiles { get; set; } = new List<File>();
-
-        /// <summary>
         /// Активные сессии пользователя.
         /// </summary>
         public ICollection<Session> Sessions { get; set; } = new List<Session>();
+
+        /// <summary>
+        /// Коллекция чатов пользователя.
+        /// </summary>
+        public ICollection<ChatMember> Chats { get; set; } = new List<ChatMember>();
     }
 }

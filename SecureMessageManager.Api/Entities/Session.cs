@@ -40,7 +40,8 @@
         /// <summary>
         /// Дата создания сессии.
         /// </summary>
-        public DateTime CreatedAt { get; set; }
+        /// <remarks>Автозаполняется.</remarks>
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         /// <summary>
         /// Ссылка на пользователя.

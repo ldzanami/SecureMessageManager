@@ -19,10 +19,10 @@ namespace SecureMessageManager.Api.Entities
         public Guid SenderId { get; set; }
 
         /// <summary>
-        /// Id получателя.
+        /// Id чата.
         /// </summary>
-        public Guid ReceiverId { get; set; }
-        
+        public Guid ChatId { get; set; }
+
         /// <summary>
         /// Имя файла.
         /// </summary>
@@ -52,8 +52,8 @@ namespace SecureMessageManager.Api.Entities
         public User Sender { get; set; }
 
         /// <summary>
-        /// Ссылка на получателя.
+        /// Ссылка на чат.
         /// </summary>
-        public User Receiver { get; set; }
+        public Chat Chat { get; set; }
     }
 }

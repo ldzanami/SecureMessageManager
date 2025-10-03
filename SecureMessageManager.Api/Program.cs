@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using SecureMessageManager.Api.Data;
+using SecureMessageManager.Api.Hubs;
 using SecureMessageManager.Api.Middlewares;
 using SecureMessageManager.Api.Repositories.Interfaces.User;
 using SecureMessageManager.Api.Repositories.User;
@@ -109,6 +110,7 @@ namespace SecureMessageManager.Api
             builder.Services.AddScoped<ISessionRepository, SessionRepository>();
             builder.Services.AddScoped<IGeneratorService, GeneratorService>();
             builder.Services.AddScoped<IPasswordHashService, PasswordHashService>();
+            builder.Services.AddSignalR();
 
 
             var app = builder.Build();
@@ -129,6 +131,7 @@ namespace SecureMessageManager.Api
             app.UseAuthorization();
 
             app.MapControllers();
+            app.MapHub<ChatHub>("/chatHub");
 
 
 

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SecureMessageManager.Client.Services.Helpers
 {
-    public class SecureDataManager
+    public class SecureDataService
     {
         public static async Task WriteSecureDataAsync(string token, string storagePath, string fileName)
         {

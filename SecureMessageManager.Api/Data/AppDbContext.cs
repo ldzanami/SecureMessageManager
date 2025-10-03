@@ -35,6 +35,16 @@ namespace SecureMessageManager.Api.Data
         public DbSet<Log> Logs { get; set; }
 
         /// <summary>
+        /// Сущность Chats.
+        /// </summary>
+        public DbSet<Chat> Chats { get; set; }
+
+        /// <summary>
+        /// Сущность ChatMembers.
+        /// </summary>
+        public DbSet<ChatMember> ChatMembers { get; set; }
+
+        /// <summary>
         /// Особенности содзания схемы БД.
         /// </summary>
         /// <param name="modelBuilder">Объект проектировщика БД.</param>
@@ -47,24 +57,34 @@ namespace SecureMessageManager.Api.Data
                                        .HasForeignKey(mes => mes.SenderId)
                                        .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<User>().HasMany(user => user.ReceivedMessages)
-                                       .WithOne(mes => mes.Receiver)
-                                       .HasForeignKey(mes => mes.ReceiverId)
-                                       .OnDelete(DeleteBehavior.Restrict);
-
             modelBuilder.Entity<User>().HasMany(user => user.SentFiles)
                                        .WithOne(file => file.Sender)
                                        .HasForeignKey(file => file.SenderId)
                                        .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<User>().HasMany(user => user.ReceivedFiles)
-                                       .WithOne(file => file.Receiver)
-                                       .HasForeignKey(file => file.ReceiverId)
-                                       .OnDelete(DeleteBehavior.Restrict);
-
             modelBuilder.Entity<User>().HasMany(user => user.Sessions)
                                        .WithOne(session => session.User)
                                        .HasForeignKey(session => session.UserId)
+                                       .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<User>().HasMany(user => user.Chats)
+                                       .WithOne(member => member.User)
+                                       .HasForeignKey(member => member.UserId)
+                                       .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Chat>().HasMany(c => c.Members)
+                                       .WithOne(m => m.Chat)
+                                       .HasForeignKey(m => m.ChatId)
+                                       .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Chat>().HasMany(c => c.Messages)
+                                       .WithOne(m => m.Chat)
+                                       .HasForeignKey(m => m.ChatId)
+                                       .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Chat>().HasMany(c => c.Files)
+                                       .WithOne(f => f.Chat)
+                                       .HasForeignKey(m => m.ChatId)
                                        .OnDelete(DeleteBehavior.Cascade);
         }
     }

@@ -13,14 +13,14 @@ using System.Windows;
 
 namespace SecureMessageManager.Client.Services.Helpers
 {
-    public class DeviceInfoCollector
+    public class DeviceInfoService
     {
         private const string DeviceIdFileName = "device.id.dat";
         private static readonly string StoragePath = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
             "SMMClient");
 
-        public async Task<DeviceInfoDto> GetDeviceInfoAsync()
+        public static async Task<DeviceInfoDto> GetDeviceInfoAsync()
         {
             var id = await GetOrCreateDeviceIdAsync();
 
@@ -58,7 +58,7 @@ namespace SecureMessageManager.Client.Services.Helpers
             return di;
         }
 
-        private async Task<string> GetOrCreateDeviceIdAsync()
+        private static async Task<string> GetOrCreateDeviceIdAsync()
         {
             Directory.CreateDirectory(StoragePath);
             var path = Path.Combine(StoragePath, DeviceIdFileName);

@@ -12,8 +12,8 @@ using SecureMessageManager.Api.Data;
 namespace SecureMessageManager.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250926074104_AddSomeFields")]
-    partial class AddSomeFields
+    [Migration("20251003140118_AddedChats")]
+    partial class AddedChats
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,10 +25,70 @@ namespace SecureMessageManager.Api.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("SecureMessageManager.Api.Entities.Chat", b =>
+                {
+                    b.Property<Guid>("ChatId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<byte[]>("Icon")
+                        .IsRequired()
+                        .HasColumnType("bytea");
+
+                    b.Property<bool>("IsGroup")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("ChatId");
+
+                    b.ToTable("Chats");
+                });
+
+            modelBuilder.Entity("SecureMessageManager.Api.Entities.ChatMember", b =>
+                {
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("ChatId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("JoinedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("UserId", "ChatId");
+
+                    b.HasIndex("ChatId");
+
+                    b.ToTable("ChatMembers");
+                });
+
             modelBuilder.Entity("SecureMessageManager.Api.Entities.File", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("ChatId")
                         .HasColumnType("uuid");
 
                     b.Property<byte[]>("FileEncKey")
@@ -44,9 +104,6 @@ namespace SecureMessageManager.Api.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<Guid>("ReceiverId")
-                        .HasColumnType("uuid");
-
                     b.Property<Guid>("SenderId")
                         .HasColumnType("uuid");
 
@@ -55,7 +112,7 @@ namespace SecureMessageManager.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ReceiverId");
+                    b.HasIndex("ChatId");
 
                     b.HasIndex("SenderId");
 
@@ -95,6 +152,9 @@ namespace SecureMessageManager.Api.Migrations
                         .IsRequired()
                         .HasColumnType("bytea");
 
+                    b.Property<Guid>("ChatId")
+                        .HasColumnType("uuid");
+
                     b.Property<byte[]>("ContentEnc")
                         .IsRequired()
                         .HasColumnType("bytea");
@@ -108,9 +168,6 @@ namespace SecureMessageManager.Api.Migrations
                     b.Property<bool>("IsUpdated")
                         .HasColumnType("boolean");
 
-                    b.Property<Guid>("ReceiverId")
-                        .HasColumnType("uuid");
-
                     b.Property<Guid>("SenderId")
                         .HasColumnType("uuid");
 
@@ -119,7 +176,7 @@ namespace SecureMessageManager.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ReceiverId");
+                    b.HasIndex("ChatId");
 
                     b.HasIndex("SenderId");
 
@@ -168,6 +225,10 @@ namespace SecureMessageManager.Api.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<byte[]>("Icon")
+                        .IsRequired()
+                        .HasColumnType("bytea");
+
                     b.Property<bool>("IsOnline")
                         .HasColumnType("boolean");
 
@@ -201,12 +262,31 @@ namespace SecureMessageManager.Api.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("SecureMessageManager.Api.Entities.ChatMember", b =>
+                {
+                    b.HasOne("SecureMessageManager.Api.Entities.Chat", "Chat")
+                        .WithMany("Members")
+                        .HasForeignKey("ChatId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SecureMessageManager.Api.Entities.User", "User")
+                        .WithMany("Chats")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Chat");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("SecureMessageManager.Api.Entities.File", b =>
                 {
-                    b.HasOne("SecureMessageManager.Api.Entities.User", "Receiver")
-                        .WithMany("ReceivedFiles")
-                        .HasForeignKey("ReceiverId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                    b.HasOne("SecureMessageManager.Api.Entities.Chat", "Chat")
+                        .WithMany("Files")
+                        .HasForeignKey("ChatId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("SecureMessageManager.Api.Entities.User", "Sender")
@@ -215,7 +295,7 @@ namespace SecureMessageManager.Api.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("Receiver");
+                    b.Navigation("Chat");
 
                     b.Navigation("Sender");
                 });
@@ -233,10 +313,10 @@ namespace SecureMessageManager.Api.Migrations
 
             modelBuilder.Entity("SecureMessageManager.Api.Entities.Message", b =>
                 {
-                    b.HasOne("SecureMessageManager.Api.Entities.User", "Receiver")
-                        .WithMany("ReceivedMessages")
-                        .HasForeignKey("ReceiverId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                    b.HasOne("SecureMessageManager.Api.Entities.Chat", "Chat")
+                        .WithMany("Messages")
+                        .HasForeignKey("ChatId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("SecureMessageManager.Api.Entities.User", "Sender")
@@ -245,7 +325,7 @@ namespace SecureMessageManager.Api.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("Receiver");
+                    b.Navigation("Chat");
 
                     b.Navigation("Sender");
                 });
@@ -261,11 +341,18 @@ namespace SecureMessageManager.Api.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("SecureMessageManager.Api.Entities.Chat", b =>
+                {
+                    b.Navigation("Files");
+
+                    b.Navigation("Members");
+
+                    b.Navigation("Messages");
+                });
+
             modelBuilder.Entity("SecureMessageManager.Api.Entities.User", b =>
                 {
-                    b.Navigation("ReceivedFiles");
-
-                    b.Navigation("ReceivedMessages");
+                    b.Navigation("Chats");
 
                     b.Navigation("SentFiles");
 
