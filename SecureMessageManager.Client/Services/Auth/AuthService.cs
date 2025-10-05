@@ -1,6 +1,7 @@
 ﻿using SecureMessageManager.Client.Services.Helpers;
 using SecureMessageManager.Client.Services.Interfaces.Auth;
-using SecureMessageManager.Shared.DTOs.Auth;
+using SecureMessageManager.Shared.DTOs.Auth.Post.Incoming;
+using SecureMessageManager.Shared.DTOs.Auth.Post.Response;
 using System;
 using System.Collections.Generic;
 using System.Linq;

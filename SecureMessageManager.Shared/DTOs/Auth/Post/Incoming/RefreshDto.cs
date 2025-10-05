@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SecureMessageManager.Shared.DTOs.Auth
+namespace SecureMessageManager.Shared.DTOs.Auth.Post.Incoming
 {
     /// <summary>
     /// Ответ на обновление токенов.

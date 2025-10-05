@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SecureMessageManager.Shared.DTOs.Communication
+namespace SecureMessageManager.Shared.DTOs.Communication.Messages.Post.Incoming
 {
     /// <summary>
     /// Отправленное сообщение.
@@ -24,7 +24,7 @@ namespace SecureMessageManager.Shared.DTOs.Communication
         /// <summary>
         /// Зашифрованное содержимое сообщения.
         /// </summary>
-        public string ContentEnc {  get; set; }
+        public string ContentEnc { get; set; }
 
         /// <summary>
         /// Когда было отправлено.

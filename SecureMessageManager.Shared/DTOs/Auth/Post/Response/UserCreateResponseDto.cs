@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SecureMessageManager.Shared.DTOs.Auth
+namespace SecureMessageManager.Shared.DTOs.Auth.Post.Response
 {
     /// <summary>
     /// Ответ на регистрацию.
     /// </summary>
-    public class UserResponseDto
+    public class UserCreatedResponseDto
     {
 
         /// <summary>

@@ -1,8 +1,9 @@
 ﻿using Isopoh.Cryptography.Argon2;
-using Isopoh.Cryptography.SecureArray;
 using Microsoft.EntityFrameworkCore;
 using SecureMessageManager.Api.Data;
 using SecureMessageManager.Api.Repositories.Interfaces.User;
+using SecureMessageManager.Shared.DTOs.Auth.Post.Response;
+using SecureMessageManager.Shared.DTOs.Communication.Users.Get.Response;
 
 namespace SecureMessageManager.Api.Repositories.User
 {
@@ -29,9 +30,19 @@ namespace SecureMessageManager.Api.Repositories.User
         /// </summary>
         /// <param name="username">Имя пользователя.</param>
         /// <returns>Пользователь, если найден; иначе null.</returns>
-        public async Task<Entities.User?> GetByUsernameAsync(string username)
+        public async Task<GetUserResponseDto?> GetByUsernameAsync(string username)
         {
-            return await _context.Users.FirstOrDefaultAsync(user => user.UsernameNormalized == username.ToUpper());
+            var user = await _context.Users.FirstOrDefaultAsync(user => user.UsernameNormalized == username.ToUpper());
+
+            return user != null ? new GetUserResponseDto
+            {
+                Username = user.Username,
+                CreatedAt = user.CreatedAt,
+                Icon = user.Icon,
+                Id = user.Id,
+                IsOnline = user.IsOnline,
+                PublicKey = user.PublicKey
+            } : null;
         }
 
         /// <summary>
@@ -43,6 +54,40 @@ namespace SecureMessageManager.Api.Repositories.User
         public bool VerifyPassword(string password, byte[] hash)
         {
             return Argon2.Verify(System.Text.Encoding.UTF8.GetString(hash), password);
+        }
+
+        /// <summary>
+        /// Асинхронно получает секреты пользователя.
+        /// </summary>
+        /// <param name="userId">Id пользователя.</param>
+        /// <returns>Секреты пользователя.</returns>
+        public async Task<UserSecretsDto> GetUserSecretsAsync(string username)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.UsernameNormalized == username);
+            return new UserSecretsDto
+            {
+                Id = user.Id,
+                PasswordHash = user.PasswordHash,
+                PrivateKeyEnc = user.PrivateKeyEnc,
+                UsernameNormalized = user.UsernameNormalized
+            };
+        }
+
+        /// <summary>
+        /// Асинхронно получает секреты пользователя.
+        /// </summary>
+        /// <param name="userId">Id пользователя.</param>
+        /// <returns>Секреты пользователя.</returns>
+        public async Task<UserSecretsDto> GetSecretsAsync(Guid userId)
+        {
+            var user = await _context.Users.FindAsync(userId);
+            return new UserSecretsDto
+            {
+                Id = user.Id,
+                PasswordHash = user.PasswordHash,
+                PrivateKeyEnc = user.PrivateKeyEnc,
+                UsernameNormalized = user.UsernameNormalized
+            };
         }
     }
 }

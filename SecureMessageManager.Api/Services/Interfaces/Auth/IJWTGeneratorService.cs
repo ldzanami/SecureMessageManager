@@ -1,4 +1,5 @@
 ﻿using SecureMessageManager.Api.Entities;
+using SecureMessageManager.Shared.DTOs.Auth.Post.Response;
 
 namespace SecureMessageManager.Api.Services.Interfaces.Auth
 {
@@ -13,7 +14,7 @@ namespace SecureMessageManager.Api.Services.Interfaces.Auth
         /// <param name="user">Пользователь токена.</param>
         /// <param name="expiresAt">Когда истечёт.</param>
         /// <returns>Крткосрочный JWT токен.</returns>
-        string GenerateAccessToken(User user, out DateTime expiresAt);
+        string GenerateAccessToken(UserSecretsDto user, out DateTime expiresAt);
 
         /// <summary>
         /// Генерирует долгоживущий refresh токен.

@@ -1,6 +1,7 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 using SecureMessageManager.Api.Entities;
 using SecureMessageManager.Api.Services.Interfaces.Auth;
+using SecureMessageManager.Shared.DTOs.Auth.Post.Response;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -42,7 +43,7 @@ namespace SecureMessageManager.Api.Services.Auth
         /// <param name="expiresAt">Когда истечёт.</param>
         /// <returns>Крткосрочный JWT токен.</returns>
         /// <exception cref="ArgumentNullException">User is null.</exception>
-        public string GenerateAccessToken(User user, out DateTime expiresAt)
+        public string GenerateAccessToken(UserSecretsDto user, out DateTime expiresAt)
         {
             ArgumentNullException.ThrowIfNull(user);
 
@@ -52,7 +53,7 @@ namespace SecureMessageManager.Api.Services.Auth
             var claims = new[]
             {
                 new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
-                new Claim(JwtRegisteredClaimNames.UniqueName, user.Username),
+                new Claim(JwtRegisteredClaimNames.UniqueName, user.UsernameNormalized),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim(JwtRegisteredClaimNames.Iat, new DateTimeOffset(now).ToUnixTimeSeconds().ToString(), ClaimValueTypes.Integer64)
             };

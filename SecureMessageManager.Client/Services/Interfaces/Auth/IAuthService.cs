@@ -1,4 +1,4 @@
-﻿using SecureMessageManager.Shared.DTOs.Auth;
+﻿using SecureMessageManager.Shared.DTOs.Auth.Post.Incoming;
 using System;
 using System.Collections.Generic;
 using System.Linq;

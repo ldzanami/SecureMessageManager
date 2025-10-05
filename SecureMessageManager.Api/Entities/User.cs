@@ -10,6 +10,7 @@ namespace SecureMessageManager.Api.Entities
         /// <summary>
         /// Id пользователя.
         /// </summary>
+        /// <remarks>Автозаполняется.</remarks>
         public Guid Id { get; set; } = Guid.NewGuid();
 
         /// <summary>

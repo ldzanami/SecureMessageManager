@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace SecureMessageManager.Shared.DTOs.Auth
+namespace SecureMessageManager.Shared.DTOs.Auth.Post.Incoming
 {
     /// <summary>
     /// Регистрационный запрос.

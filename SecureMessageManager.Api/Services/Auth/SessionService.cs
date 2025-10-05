@@ -3,6 +3,7 @@ using SecureMessageManager.Api.Data;
 using SecureMessageManager.Api.Entities;
 using SecureMessageManager.Api.Repositories.Interfaces.User;
 using SecureMessageManager.Api.Services.Interfaces.Auth;
+using SecureMessageManager.Shared.DTOs.Auth.Post.Response;
 
 namespace SecureMessageManager.Api.Services.Auth
 {
@@ -14,6 +15,7 @@ namespace SecureMessageManager.Api.Services.Auth
         private readonly IJWTGeneratorService _jwtGeneratorService;
         private readonly TimeSpan _refreshLifetime;
         private readonly ISessionRepository _sessionRepository;
+        private readonly IUserRepository _userRepository;
 
         /// <summary>
         /// Конструктор класса.
@@ -22,12 +24,13 @@ namespace SecureMessageManager.Api.Services.Auth
         /// <param name="jwtGeneratorService">For DI.</param>
         /// <param name="configuration">For DI.</param>
         /// <exception cref="ArgumentNullException">DI не передал компоненты.</exception>
-        public SessionService(ISessionRepository sessionRepository, IJWTGeneratorService jwtGeneratorService, IConfiguration configuration)
+        public SessionService(ISessionRepository sessionRepository, IJWTGeneratorService jwtGeneratorService, IConfiguration configuration, IUserRepository userRepository)
         {
             _sessionRepository = sessionRepository ?? throw new ArgumentNullException(nameof(sessionRepository));
             _jwtGeneratorService = jwtGeneratorService ?? throw new ArgumentNullException(nameof(jwtGeneratorService));
             var refreshTokenLifetimeDays = int.Parse(configuration["Jwt:RefreshTokenLifetimeDays"] ?? "7");
             _refreshLifetime = TimeSpan.FromDays(refreshTokenLifetimeDays);
+            _userRepository = userRepository;
         }
 
         /// <summary>
@@ -36,7 +39,7 @@ namespace SecureMessageManager.Api.Services.Auth
         /// <param name="user">Пользователь сессии.</param>
         /// <param name="deviceInfo">Информация об устройстве.</param>
         /// <returns>Access + refresh токены и id сессии.</returns>
-        public async Task<(string AccessToken, string RefreshToken, Guid SessionId)> CreateSessionAsync(User user, string deviceInfo)
+        public async Task<(string AccessToken, string RefreshToken, Guid SessionId)> CreateSessionAsync(UserSecretsDto user, string deviceInfo)
         {
             var access = _jwtGeneratorService.GenerateAccessToken(user, out _);
             var refreshPlain = _jwtGeneratorService.GenerateRefreshToken();
@@ -44,7 +47,6 @@ namespace SecureMessageManager.Api.Services.Auth
 
             var session = new Session
             {
-                Id = Guid.NewGuid(),
                 UserId = user.Id,
                 RefreshToken = refreshHash,
                 ExpiresAt = DateTime.UtcNow + _refreshLifetime,
@@ -69,7 +71,9 @@ namespace SecureMessageManager.Api.Services.Auth
             var incomingHash = _jwtGeneratorService.HashToken(incomingRefreshToken);
 
             var session = await _sessionRepository.GetSessionByRefreshHashAsync(incomingHash);
-            
+
+            var userSecrets = await _userRepository.GetSecretsAsync(session.UserId);
+
             if (session == null) throw new UnauthorizedAccessException("Refresh токен не найден");
             if (session.IsRevoked) throw new UnauthorizedAccessException("Refresh токен отозван");
             if (session.ExpiresAt <= DateTime.UtcNow) throw new UnauthorizedAccessException("Refresh токен просрочен");
@@ -80,7 +84,7 @@ namespace SecureMessageManager.Api.Services.Auth
 
             await _sessionRepository.UpdateSessionAsync(session);
 
-            var access = _jwtGeneratorService.GenerateAccessToken(session.User, out _);
+            var access = _jwtGeneratorService.GenerateAccessToken(userSecrets, out _);
             return (access, newRefreshPlain, session.Id);
         }
 

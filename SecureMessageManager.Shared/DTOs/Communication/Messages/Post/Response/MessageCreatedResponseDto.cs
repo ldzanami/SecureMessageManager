@@ -1,11 +1,15 @@
-﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace SecureMessageManager.Api.Entities
+namespace SecureMessageManager.Shared.DTOs.Communication.Messages.Post.Response
 {
     /// <summary>
-    /// Сущность сообщения.
+    /// Ответ на создание сообщения.
     /// </summary>
-    public class Message
+    public class MessageCreatedResponseDto
     {
         /// <summary>
         /// Id сообщения.
@@ -43,7 +47,7 @@ namespace SecureMessageManager.Api.Entities
         /// Дата изменения сообщения.
         /// </summary>
         public DateTime? UpdatedAt { get; set; }
-        
+
         /// <summary>
         /// Изменялось ли сообщение.
         /// </summary>
@@ -53,15 +57,5 @@ namespace SecureMessageManager.Api.Entities
         /// Было ли сообщение прочитано.
         /// </summary>
         public bool IsRead { get; set; }
-
-        /// <summary>
-        /// Ссылка на отправителя.
-        /// </summary>
-        public User Sender { get; set; }
-
-        /// <summary>
-        /// Ссылка на чат.
-        /// </summary>
-        public Chat Chat { get; set; }
     }
 }

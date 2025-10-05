@@ -2,8 +2,10 @@
 using SecureMessageManager.Api.Repositories.Interfaces.User;
 using SecureMessageManager.Api.Services.Interfaces.Auth;
 using SecureMessageManager.Api.Services.Interfaces.Encription;
-using SecureMessageManager.Shared.DTOs.Auth;
+using SecureMessageManager.Shared.DTOs.Auth.Post.Incoming;
+using SecureMessageManager.Shared.DTOs.Auth.Post.Response;
 using SecureMessageManager.Shared.DTOs.Auxiliary.DeviceInfo;
+using SecureMessageManager.Shared.DTOs.Communication.Users.Get.Response;
 
 namespace SecureMessageManager.Api.Services.Auth
 {
@@ -26,7 +28,7 @@ namespace SecureMessageManager.Api.Services.Auth
         /// Асинхронно регистрирует нового пользователя в системе.
         /// </summary>
         /// <param name="dto">Данные для регистрации пользователя.</param>
-        public async Task<UserResponseDto> RegisterAsync(RegisterRequestDto dto)
+        public async Task<GetUserResponseDto> RegisterAsync(RegisterRequestDto dto)
         {
             if (await _userRepository.GetByUsernameAsync(dto.Username.ToUpper()) != null)
             {
@@ -48,7 +50,7 @@ namespace SecureMessageManager.Api.Services.Auth
 
             await _userRepository.AddAsync(user);
 
-            return new UserResponseDto
+            return new GetUserResponseDto
             {
                 Id = user.Id,
                 Username = user.Username,
@@ -64,7 +66,7 @@ namespace SecureMessageManager.Api.Services.Auth
         /// <returns>JWT токен при успешной авторизации.</returns>
         public async Task<AuthResponseDto> AuthorizationAsync(AuthorizationDto dto, DeviceInfoDto deviceInfo)
         {
-            var user = await _userRepository.GetByUsernameAsync(dto.Username.ToUpper());
+            var user = await _userRepository.GetUserSecretsAsync(dto.Username.ToUpper());
 
             if (user == null)
             {
@@ -153,6 +155,16 @@ namespace SecureMessageManager.Api.Services.Auth
         public async Task RevokeAllSessionsAsync(Guid userId)
         {
             await _sessionService.RevokeAllSessionsAsync(userId);
+        }
+
+        /// <summary>
+        /// Асинхронно получает коллекцию активных сессий пользователя.
+        /// </summary>
+        /// <param name="userId">Id пользователя.</param>
+        /// <returns>Коллекция активных сессий пользователя.</returns>
+        public async Task<ICollection<GetSessionResponseDto>> GetActiveUserSessionsAsync(Guid userId)
+        {
+            return await _sessionRepository.GetActiveUserSessionsAsync(userId);
         }
     }
 }

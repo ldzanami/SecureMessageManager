@@ -5,12 +5,11 @@
     /// </summary>
     public class Session
     {
-
         /// <summary>
         /// Id Сессии.
         /// </summary>
         /// <remarks>Автозаполняется.</remarks>
-        public Guid Id { get; set; }
+        public Guid Id { get; set; } = Guid.NewGuid();
 
         /// <summary>
         /// Id пользователя.

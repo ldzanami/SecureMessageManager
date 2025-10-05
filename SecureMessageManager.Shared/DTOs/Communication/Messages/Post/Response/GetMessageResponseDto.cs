@@ -1,27 +1,25 @@
-﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace SecureMessageManager.Api.Entities
+namespace SecureMessageManager.Shared.DTOs.Communication.Messages.Post.Response
 {
     /// <summary>
-    /// Сущность сообщения.
+    /// Ответ на получение сообщения.
     /// </summary>
-    public class Message
+    public class GetMessageResponseDto
     {
         /// <summary>
         /// Id сообщения.
         /// </summary>
-        /// <remarks>Автозаполняется.</remarks>
-        public Guid Id { get; set; } = Guid.NewGuid();
+        public Guid Id { get; set; }
 
         /// <summary>
         /// Id отправителя.
         /// </summary>
         public Guid SenderId { get; set; }
-
-        /// <summary>
-        /// Id чата.
-        /// </summary>
-        public Guid ChatId { get; set; }
 
         /// <summary>
         /// Зашифрованный текст сообщения.
@@ -36,14 +34,13 @@ namespace SecureMessageManager.Api.Entities
         /// <summary>
         /// Дата отправления.
         /// </summary>
-        /// <remarks>Автозаполняется.</remarks>
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime CreatedAt { get; set; }
 
         /// <summary>
         /// Дата изменения сообщения.
         /// </summary>
         public DateTime? UpdatedAt { get; set; }
-        
+
         /// <summary>
         /// Изменялось ли сообщение.
         /// </summary>
@@ -53,15 +50,5 @@ namespace SecureMessageManager.Api.Entities
         /// Было ли сообщение прочитано.
         /// </summary>
         public bool IsRead { get; set; }
-
-        /// <summary>
-        /// Ссылка на отправителя.
-        /// </summary>
-        public User Sender { get; set; }
-
-        /// <summary>
-        /// Ссылка на чат.
-        /// </summary>
-        public Chat Chat { get; set; }
     }
 }

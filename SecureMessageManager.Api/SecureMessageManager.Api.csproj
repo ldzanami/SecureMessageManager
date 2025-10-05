@@ -28,4 +28,8 @@
     <ProjectReference Include="..\SecureMessageManager.Shared\SecureMessageManager.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Migrations\" />
+  </ItemGroup>
+
 </Project>

@@ -1,5 +1,8 @@
-﻿using SecureMessageManager.Shared.DTOs.Auth;
+﻿using SecureMessageManager.Api.Entities;
+using SecureMessageManager.Shared.DTOs.Auth.Post.Incoming;
+using SecureMessageManager.Shared.DTOs.Auth.Post.Response;
 using SecureMessageManager.Shared.DTOs.Auxiliary.DeviceInfo;
+using SecureMessageManager.Shared.DTOs.Communication.Users.Get.Response;
 
 namespace SecureMessageManager.Api.Services.Interfaces.Auth
 {
@@ -12,7 +15,7 @@ namespace SecureMessageManager.Api.Services.Interfaces.Auth
         /// Асинхронно регистрирует нового пользователя в системе.
         /// </summary>
         /// <param name="dto"> Данные для регистрации пользователя. </param>
-        Task<UserResponseDto> RegisterAsync(RegisterRequestDto dto);
+        Task<GetUserResponseDto> RegisterAsync(RegisterRequestDto dto);
 
         /// <summary>
         /// Асинхронно авторизует пользователя и выдает JWT токен.
@@ -47,5 +50,12 @@ namespace SecureMessageManager.Api.Services.Interfaces.Auth
         /// </summary>
         /// <param name="userId">Id пользователя.</param>
         Task RevokeAllSessionsAsync(Guid userId);
+
+        /// <summary>
+        /// Асинхронно получает коллекцию активных сессий пользователя.
+        /// </summary>
+        /// <param name="userId">Id пользователя.</param>
+        /// <returns>Коллекция активных сессий пользователя.</returns>
+        Task<ICollection<GetSessionResponseDto>> GetActiveUserSessionsAsync(Guid userId);
     }
 }

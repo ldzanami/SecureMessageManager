@@ -1,15 +1,20 @@
-﻿namespace SecureMessageManager.Api.Entities
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SecureMessageManager.Shared.DTOs.Communication.Chats.Get.Response
 {
     /// <summary>
-    /// Сущность чата.
+    /// Ответ на получение чата.
     /// </summary>
-    public class Chat
+    public class GetChatResponseDto
     {
         /// <summary>
         /// Id чата.
         /// </summary>
-        /// <remarks>Автозаполняется.</remarks>
-        public Guid Id { get; set; } = Guid.NewGuid();
+        public Guid ChatId { get; set; }
 
         /// <summary>
         /// Название чата.
@@ -41,20 +46,5 @@
         /// Когда последний раз обновлялись данные чата.
         /// </summary>
         public DateTime UpdatedAt { get; set; }
-
-        /// <summary>
-        /// Список пользователей чата.
-        /// </summary>
-        public ICollection<ChatMember> Members { get; set; } = new List<ChatMember>();
-
-        /// <summary>
-        /// Коллекция сообщений чата.
-        /// </summary>
-        public ICollection<Message> Messages { get; set; } = new List<Message>();
-
-        /// <summary>
-        /// Коллекция файлов чата.
-        /// </summary>
-        public ICollection<File> Files { get; set; } = new List<File>();
     }
 }

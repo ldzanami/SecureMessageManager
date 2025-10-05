@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using SecureMessageManager.Api.Services.Interfaces.Communication;
-using SecureMessageManager.Shared.DTOs.Communication;
+using SecureMessageManager.Shared.DTOs.Communication.Messages.Post.Incoming;
 
 namespace SecureMessageManager.Api.Hubs
 {

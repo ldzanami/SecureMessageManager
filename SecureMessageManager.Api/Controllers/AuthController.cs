@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SecureMessageManager.Api.Services.Interfaces.Auth;
-using SecureMessageManager.Shared.DTOs.Auth;
+using SecureMessageManager.Shared.DTOs.Auth.Post.Incoming;
 using SecureMessageManager.Shared.DTOs.Auxiliary;
 
 namespace SecureMessageManager.Api.Controllers
@@ -20,7 +20,7 @@ namespace SecureMessageManager.Api.Controllers
         /// Post запрос для регистрации пользователя.
         /// </summary>
         /// <param name="dto">Dto с данными для регистрации.</param>
-        /// <returns>200 если удачно;<br>400 если ошибка;</br></returns>
+        /// <returns>200 UserResponseDto.</returns>
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterRequestDto dto)
         {
@@ -31,7 +31,7 @@ namespace SecureMessageManager.Api.Controllers
         /// Post запрос для авторизации пользователя.
         /// </summary>
         /// <param name="dto">Dto с данными для авторизации.</param>
-        /// <returns>200 если удачно;<br>400 если ошибка;</br></returns>
+        /// <returns>200 AuthResponseDto.</returns>
         [HttpPost("authorization")]
         public async Task<IActionResult> Authorization([FromBody] AuthorizationDto dto)
         {
@@ -41,8 +41,8 @@ namespace SecureMessageManager.Api.Controllers
         /// <summary>
         /// Post запрос на обновление токенов.
         /// </summary>
-        /// <param name="incomingRefreshToken"></param>
-        /// <returns></returns>
+        /// <param name="incomingRefreshToken">Refresh токен пользователя.</param>
+        /// <returns>200 Access token + Refresh token + sessionId.</returns>
         [Authorize]
         [HttpPost("refresh")]
         public async Task<IActionResult> Refresh(string incomingRefreshToken)
@@ -54,6 +54,7 @@ namespace SecureMessageManager.Api.Controllers
         /// Post запрос на разлогин конкретной сессии.
         /// </summary>
         /// <param name="sessionId">Id сессии, которую надо прервать.</param>
+        /// <returns>204 No Content.</returns>
         [Authorize]
         [HttpPost("revokeSession")]
         public async Task<IActionResult> RevokeSession(Guid sessionId)
@@ -67,6 +68,7 @@ namespace SecureMessageManager.Api.Controllers
         /// </summary>
         /// <param name="userId">Id пользователя.</param>
         /// <param name="keepSessionId">Id сессии, которую нужно оставить.</param>
+        /// <returns>204 No Content.</returns>
         [Authorize]
         [HttpPost("revokeOtherSessions")]
         public async Task<IActionResult> RevokeOtherSessions(Guid userId, Guid keepSessionId)
@@ -79,12 +81,26 @@ namespace SecureMessageManager.Api.Controllers
         /// Post запрос на разлогин всех сессий пользователя.
         /// </summary>
         /// <param name="userId">Id пользователя.</param>
+        /// <returns>204 No Content.</returns>
         [Authorize]
         [HttpPost("revokeAllSessions")]
         public async Task<IActionResult> RevokeAllSessions(Guid userId)
         {
             await _authService.RevokeAllSessionsAsync(userId);
             return NoContent();
+        }
+
+        /// <summary>
+        /// Get запрос на получение всех активных сессий пользователя.
+        /// </summary>
+        /// <param name="userId">Id пользователя.</param>
+        /// <returns>200 Коллекция активных сессий пользователя.</returns>
+        [Authorize]
+        [HttpGet("sessions")]
+        public async Task<IActionResult> GetAllUserSessions(Guid userId)
+        {
+            var response = await _authService.GetActiveUserSessionsAsync(userId);
+            return Ok(response);
         }
     }
 }
