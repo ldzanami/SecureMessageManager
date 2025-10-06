@@ -43,16 +43,18 @@ namespace SecureMessageManager.Api.Entities
         /// Дата изменения сообщения.
         /// </summary>
         public DateTime? UpdatedAt { get; set; }
-        
+
         /// <summary>
         /// Изменялось ли сообщение.
         /// </summary>
+        /// <remarks>Автозаполняется.</remarks>
         public bool IsUpdated { get; set; }
 
         /// <summary>
         /// Было ли сообщение прочитано.
         /// </summary>
-        public bool IsRead { get; set; }
+        /// <remarks>Автозаполняется.</remarks>
+        public bool IsRead { get; set; } = false;
 
         /// <summary>
         /// Ссылка на отправителя.

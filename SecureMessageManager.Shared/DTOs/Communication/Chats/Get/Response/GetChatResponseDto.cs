@@ -32,9 +32,9 @@ namespace SecureMessageManager.Shared.DTOs.Communication.Chats.Get.Response
         public bool IsGroup { get; set; }
 
         /// <summary>
-        /// Аватар чата.
+        /// Путь к аватару чата на сервере.
         /// </summary>
-        public byte[] Icon { get; set; }
+        public string? Icon { get; set; }
 
         /// <summary>
         /// Когда создан чат.

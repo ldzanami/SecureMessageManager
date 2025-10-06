@@ -22,13 +22,18 @@ namespace SecureMessageManager.Shared.DTOs.Communication.Chats.Post.Incoming
         public string Description { get; set; }
 
         /// <summary>
-        /// Аватар чата.
+        /// Путь к аватару чата на сервере.
         /// </summary>
-        public byte[] Icon { get; set; }
+        public string? Icon { get; set; }
 
         /// <summary>
         /// Является ли чат группой.
         /// </summary>
         public bool IsGroup { get; set; }
+
+        /// <summary>
+        /// Id создателя чата.
+        /// </summary>
+        public Guid CreatorId { get; set; }
     }
 }

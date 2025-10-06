@@ -1,6 +1,7 @@
 ﻿using SecureMessageManager.Shared.DTOs.Communication.Users.Get.Response;
 using Isopoh.Cryptography.Argon2;
 using SecureMessageManager.Shared.DTOs.Auth.Post.Response;
+using SecureMessageManager.Api.Entities;
 
 namespace SecureMessageManager.Api.Repositories.Interfaces.User
 {
@@ -14,13 +15,20 @@ namespace SecureMessageManager.Api.Repositories.Interfaces.User
         /// </summary>
         /// <param name="username">Имя пользователя.</param>
         /// <returns>Пользователь, если найден; иначе null.</returns>
-        Task<GetUserResponseDto?> GetByUsernameAsync(string username);
+        Task<Entities.User?> GetUserByUsernameAsync(string username);
+
+        /// <summary>
+        /// Асинхронно получает пользователя по Id.
+        /// </summary>
+        /// <param name="userId">Id пользователя.</param>
+        /// <returns>Пользователь, если найден; иначе null.</returns>
+        Task<Entities.User?> GetUserByIdAsync(Guid userId);
 
         /// <summary>
         /// Асинхронно добавляет нового пользователя в базу данных.
         /// </summary>
         /// <param name="user">Сущность пользователя.</param>
-        Task AddAsync(Entities.User user);
+        Task CreateUserAsync(Entities.User user);
 
         /// <summary>
         /// Проверяет правильный ли пароль.
@@ -29,19 +37,5 @@ namespace SecureMessageManager.Api.Repositories.Interfaces.User
         /// <param name="hash">Хеш пароля пользователя.</param>
         /// <returns>true если пароль верен; иначе false.</returns>
         bool VerifyPassword(string password, byte[] hash);
-
-        /// <summary>
-        /// Асинхронно получает секреты пользователя.
-        /// </summary>
-        /// <param name="username">Имя пользователя.</param>
-        /// <returns>Секреты пользователя.</returns>
-        Task<UserSecretsDto> GetUserSecretsAsync(string username);
-
-        /// <summary>
-        /// Асинхронно получает секреты пользователя.
-        /// </summary>
-        /// <param name="userId">Id пользователя.</param>
-        /// <returns>Секреты пользователя.</returns>
-        Task<UserSecretsDto> GetSecretsAsync(Guid userId);
     }
 }

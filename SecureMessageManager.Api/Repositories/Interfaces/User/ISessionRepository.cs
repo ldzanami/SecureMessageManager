@@ -1,5 +1,4 @@
 ﻿using SecureMessageManager.Api.Entities;
-using SecureMessageManager.Shared.DTOs.Auth.Post.Response;
 
 namespace SecureMessageManager.Api.Repositories.Interfaces.User
 {
@@ -13,7 +12,7 @@ namespace SecureMessageManager.Api.Repositories.Interfaces.User
         /// </summary>
         /// <param name="userId">Id пользователя</param>
         /// <returns>Коллекция сессий пользователя, кроме завершённых.</returns>
-        Task<ICollection<GetSessionResponseDto>> GetUserSessionsExcludingRevokedAsync(Guid userId);
+        Task<ICollection<Session>> GetUserSessionsExcludingRevokedAsync(Guid userId);
 
         /// <summary>
         /// Асинхронно добавляет сессию.
@@ -26,20 +25,20 @@ namespace SecureMessageManager.Api.Repositories.Interfaces.User
         /// </summary>
         /// <param name="refreshHash">Хеш refresh токена</param>
         /// <returns>Сессия с указанным refresh токеном.</returns>
-        Task<GetSessionResponseDto> GetSessionByRefreshHashAsync(string refreshHash);
+        Task<Session> GetSessionByRefreshHashAsync(string refreshHash);
 
         /// <summary>
         /// Асинхронно обновляет сессию.
         /// </summary>
         /// <param name="session">Сессия для обновления.</param>
-        Task UpdateSessionAsync(GetSessionResponseDto session);
+        Task UpdateSessionAsync(Session session);
 
         /// <summary>
         /// Асинхронно получает сессию по Id.
         /// </summary>
         /// <param name="sessionId">Id сессии.</param>
         /// <returns>Сессия с указанным Id.</returns>
-        Task<GetSessionResponseDto> GetSessionByIdAsync(Guid sessionId);
+        Task<Session> GetSessionByIdAsync(Guid sessionId);
 
         /// <summary>
         /// Асинхронно получает коллекцию сессий пользвателя, кроме указанной и завершённых.
@@ -47,32 +46,32 @@ namespace SecureMessageManager.Api.Repositories.Interfaces.User
         /// <param name="userId">Id пользователя.</param>
         /// <param name="keepSessionId">Id игнорируемой сессии.</param>
         /// <returns>Коллекция сессий пользвателя, кроме указанной и завершённых.</returns>
-        Task<ICollection<GetSessionResponseDto>> GetAllUserSessionsExcludingSpecifiedAndRevokedAsync(Guid userId, Guid keepSessionId);
+        Task<ICollection<Session>> GetAllUserSessionsExcludingSpecifiedAndRevokedAsync(Guid userId, Guid keepSessionId);
 
         /// <summary>
         /// Асинхронно обновляет несколько сессий.
         /// </summary>
         /// <param name="sessions">Коллекция сессий для обновления.</param>
-        Task UpdateSessionsRangeAsync(ICollection<GetSessionResponseDto> sessions);
+        Task UpdateSessionsRangeAsync(ICollection<Session> sessions);
 
         /// <summary>
         /// Асинхронно получает все сессии пользователя.
         /// </summary>
         /// <param name="userId">Id пользователя.</param>
         /// <returns>Коллекция всех сессий пользователя.</returns>
-        Task<ICollection<GetSessionResponseDto>> GetUserSessionsAsync(Guid userId);
+        Task<ICollection<Session>> GetUserSessionsAsync(Guid userId);
 
         /// <summary>
         /// Асинхронно удаляет сессию.
         /// </summary>
         /// <param name="session">Сесиия для удаления.</param>
-        Task RemoveSessionAsync(GetSessionResponseDto session);
+        Task RemoveSessionAsync(Session session);
 
         /// <summary>
         /// Асинхронно получает все активные сессии пользователя.
         /// </summary>
         /// <param name="userId">Id пользователя.</param>
         /// <returns>Коллекция активных сессий пользователя.</returns>
-        Task<ICollection<GetSessionResponseDto>> GetActiveUserSessionsAsync(Guid userId);
+        Task<ICollection<Session>> GetActiveUserSessionsAsync(Guid userId);
     }
 }

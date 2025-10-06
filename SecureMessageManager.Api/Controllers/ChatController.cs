@@ -19,11 +19,23 @@ namespace SecureMessageManager.Api.Controllers
         /// Post запрос на создание чата.
         /// </summary>
         /// <param name="dto">Данные для создания чата.</param>
-        /// <returns>200 ChatCreatedResponseDto.</returns>
+        /// <returns>201 Созданное сообщение - ChatCreatedResponseDto.</returns>
         [HttpPost("create")]
         public async Task<IActionResult> CreateChat(CreateChatDto dto)
         {
             var response = await _chatService.CreateChatAsync(dto);
+            return CreatedAtAction(nameof(CreateChat), response);
+        }
+
+        /// <summary>
+        /// Get запрос на получение информации о чате.
+        /// </summary>
+        /// <param name="chatId">Id чата.</param>
+        /// <returns>200 Информацию о чате - GetChatResponseDto.</returns>
+        [HttpGet("info")]
+        public async Task<IActionResult> GetChatInfo(Guid chatId)
+        {
+            var response = await _chatService.GetChatInfoAsync(chatId);
             return Ok(response);
         }
     }

@@ -34,15 +34,14 @@ namespace SecureMessageManager.Api.Hubs
         /// Метод отправки сообщения.
         /// </summary>
         /// <param name="chatId">Id чата.</param>
-        /// <param name="userId">Id пользователя.</param>
+        /// <param name="senderId">Id отправителя.</param>
         /// <param name="contentEnc">Зашифрованное сообщение.</param>
-        /// <returns></returns>
-        public async Task SendMessage(string chatId, string userId, string contentEnc)
+        public async Task SendMessage(Guid chatId, Guid senderId, byte[] contentEnc)
         {
-            await Clients.Group(chatId).SendAsync("ReceiveMessage", new SendMessageDto
+            await Clients.Group(chatId.ToString()).SendAsync("ReceiveMessage", new SendMessageDto
             {
                 ChatId = chatId,
-                UserId = userId,
+                SenderId = senderId,
                 ContentEnc = contentEnc,
                 SentAt = DateTime.UtcNow
             });

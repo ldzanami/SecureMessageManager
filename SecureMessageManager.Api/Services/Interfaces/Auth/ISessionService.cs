@@ -14,7 +14,7 @@ namespace SecureMessageManager.Api.Services.Interfaces.Auth
         /// <param name="user">Пользователь сессии.</param>
         /// <param name="deviceInfo">Информация об устройстве.</param>
         /// <returns>access + refresh токены и id сессии.</returns>
-        Task<(string AccessToken, string RefreshToken, Guid SessionId)> CreateSessionAsync(UserSecretsDto user, string deviceInfo);
+        Task<(string AccessToken, string RefreshToken, Guid SessionId)> CreateSessionAsync(User user, string deviceInfo);
 
         /// <summary>
         /// Асинхронная ротация refresh: валидирует входной refresh, если ок — меняет на новый и отдаёт новую пару.

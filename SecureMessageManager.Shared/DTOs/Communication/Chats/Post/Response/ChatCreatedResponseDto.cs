@@ -27,14 +27,19 @@ namespace SecureMessageManager.Shared.DTOs.Communication.Chats.Post.Response
         public string Description { get; set; }
 
         /// <summary>
-        /// Аватар чата.
+        /// Путь к аватару чата на сервере.
         /// </summary>
-        public byte[] Icon { get; set; }
+        public string? Icon { get; set; }
 
         /// <summary>
         /// Когда создан чат.
         /// </summary>
         /// <remarks>Автозаполняется.</remarks>
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+        /// <summary>
+        /// Id создателя чата.
+        /// </summary>
+        public Guid CreatorId { get; set; }
     }
 }

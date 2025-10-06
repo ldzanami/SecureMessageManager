@@ -30,7 +30,7 @@ namespace SecureMessageManager.Api.Services.Auth
         /// <param name="dto">Данные для регистрации пользователя.</param>
         public async Task<GetUserResponseDto> RegisterAsync(RegisterRequestDto dto)
         {
-            if (await _userRepository.GetByUsernameAsync(dto.Username.ToUpper()) != null)
+            if (await _userRepository.GetUserByUsernameAsync(dto.Username.ToUpper()) != null)
             {
                 throw new InvalidOperationException("Пользователь с таким именем уже существует.");
             }
@@ -48,13 +48,16 @@ namespace SecureMessageManager.Api.Services.Auth
                 PasswordHash = _passwordHashService.HashPassword(dto.Password, salt),
             };
 
-            await _userRepository.AddAsync(user);
+            await _userRepository.CreateUserAsync(user);
 
             return new GetUserResponseDto
             {
                 Id = user.Id,
                 Username = user.Username,
-                PublicKey = user.PublicKey
+                PublicKey = user.PublicKey,
+                CreatedAt = DateTime.UtcNow,
+                Icon = user.Icon,
+                IsOnline = user.IsOnline
             };
         }
 
@@ -66,7 +69,7 @@ namespace SecureMessageManager.Api.Services.Auth
         /// <returns>JWT токен при успешной авторизации.</returns>
         public async Task<AuthResponseDto> AuthorizationAsync(AuthorizationDto dto, DeviceInfoDto deviceInfo)
         {
-            var user = await _userRepository.GetUserSecretsAsync(dto.Username.ToUpper());
+            var user = await _userRepository.GetUserByUsernameAsync(dto.Username);
 
             if (user == null)
             {
@@ -164,7 +167,16 @@ namespace SecureMessageManager.Api.Services.Auth
         /// <returns>Коллекция активных сессий пользователя.</returns>
         public async Task<ICollection<GetSessionResponseDto>> GetActiveUserSessionsAsync(Guid userId)
         {
-            return await _sessionRepository.GetActiveUserSessionsAsync(userId);
+            return (await _sessionRepository.GetActiveUserSessionsAsync(userId)).Select(s => new GetSessionResponseDto()
+            {
+                CreatedAt = s.CreatedAt,
+                DeviceInfo = s.DeviceInfo,
+                ExpiresAt = s.ExpiresAt,
+                Id = s.Id,
+                IsRevoked = s.IsRevoked,
+                RefreshToken = s.RefreshToken,
+                UserId = s.UserId
+            }).ToList();
         }
     }
 }

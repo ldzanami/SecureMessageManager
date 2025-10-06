@@ -35,6 +35,11 @@ namespace SecureMessageManager.Api.Middlewares
                 _logger.LogWarning(ex, "Unauthorized access");
                 await WriteProblemDetailsAsync(context, HttpStatusCode.Unauthorized, ex.Message);
             }
+            catch (KeyNotFoundException ex)
+            {
+                _logger.LogWarning(ex, "Not found error");
+                await WriteProblemDetailsAsync(context, HttpStatusCode.Unauthorized, ex.Message);
+            }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Unhandled exception");

@@ -2,7 +2,6 @@
 using SecureMessageManager.Api.Data;
 using SecureMessageManager.Api.Entities;
 using SecureMessageManager.Api.Repositories.Interfaces.User;
-using SecureMessageManager.Shared.DTOs.Auth.Post.Response;
 
 namespace SecureMessageManager.Api.Repositories.User
 {
@@ -18,19 +17,9 @@ namespace SecureMessageManager.Api.Repositories.User
         /// </summary>
         /// <param name="userId">Id пользователя</param>
         /// <returns>Коллекция сессий пользователя, кроме завершённых.</returns>
-        public async Task<ICollection<GetSessionResponseDto>> GetUserSessionsExcludingRevokedAsync(Guid userId)
+        public async Task<ICollection<Session>> GetUserSessionsExcludingRevokedAsync(Guid userId)
         {
             return await _appDbContext.Sessions.Where(s => s.UserId == userId && !s.IsRevoked)
-                                               .Select(s => new GetSessionResponseDto
-                                               {
-                                                   CreatedAt = s.CreatedAt,
-                                                   DeviceInfo = s.DeviceInfo,
-                                                   Id = s.Id,
-                                                   UserId = s.UserId,
-                                                   ExpiresAt = s.ExpiresAt,
-                                                   IsRevoked = s.IsRevoked,
-                                                   RefreshToken = s.RefreshToken
-                                               })
                                                .ToListAsync();
         }
 
@@ -49,26 +38,17 @@ namespace SecureMessageManager.Api.Repositories.User
         /// </summary>
         /// <param name="refreshHash">Хеш refresh токена</param>
         /// <returns>Сессия с указанным refresh токеном.</returns>
-        public async Task<GetSessionResponseDto> GetSessionByRefreshHashAsync(string refreshHash)
+        public async Task<Session> GetSessionByRefreshHashAsync(string refreshHash)
         {
             var session = await _appDbContext.Sessions.FirstOrDefaultAsync(s => s.RefreshToken == refreshHash);
-            return new GetSessionResponseDto
-            {
-                CreatedAt = session.CreatedAt,
-                DeviceInfo = session.DeviceInfo,
-                Id = session.Id,
-                UserId = session.UserId,
-                ExpiresAt = session.ExpiresAt,
-                IsRevoked = session.IsRevoked,
-                RefreshToken = session.RefreshToken
-            };
+            return session;
         }
 
         /// <summary>
         /// Асинхронно обновляет сессию.
         /// </summary>
         /// <param name="session">Сессия для обновления.</param>
-        public async Task UpdateSessionAsync(GetSessionResponseDto session)
+        public async Task UpdateSessionAsync(Session session)
         {
             var s = await _appDbContext.Sessions.FindAsync(session.Id);
             _appDbContext.Sessions.Update(s);
@@ -80,19 +60,10 @@ namespace SecureMessageManager.Api.Repositories.User
         /// </summary>
         /// <param name="sessionId">Id сессии.</param>
         /// <returns>Сессия с указанным Id.</returns>
-        public async Task<GetSessionResponseDto> GetSessionByIdAsync(Guid sessionId)
+        public async Task<Session> GetSessionByIdAsync(Guid sessionId)
         {
             var session = await _appDbContext.Sessions.FindAsync(sessionId);
-            return new GetSessionResponseDto
-            {
-                CreatedAt = session.CreatedAt,
-                DeviceInfo = session.DeviceInfo,
-                Id = session.Id,
-                UserId = session.UserId,
-                ExpiresAt = session.ExpiresAt,
-                IsRevoked = session.IsRevoked,
-                RefreshToken = session.RefreshToken
-            };
+            return session;
         }
 
         /// <summary>
@@ -101,19 +72,9 @@ namespace SecureMessageManager.Api.Repositories.User
         /// <param name="userId">Id пользователя.</param>
         /// <param name="keepSessionId">Id игнорируемой сессии.</param>
         /// <returns>Коллекция сессий пользвателя, кроме указанной и завершённых.</returns>
-        public async Task<ICollection<GetSessionResponseDto>> GetAllUserSessionsExcludingSpecifiedAndRevokedAsync(Guid userId, Guid keepSessionId)
+        public async Task<ICollection<Session>> GetAllUserSessionsExcludingSpecifiedAndRevokedAsync(Guid userId, Guid keepSessionId)
         {
             return await _appDbContext.Sessions.Where(s => s.UserId == userId && s.Id != keepSessionId && !s.IsRevoked)
-                                               .Select(s => new GetSessionResponseDto
-                                               {
-                                                   CreatedAt = s.CreatedAt,
-                                                   DeviceInfo = s.DeviceInfo,
-                                                   Id = s.Id,
-                                                   UserId = s.UserId,
-                                                   ExpiresAt = s.ExpiresAt,
-                                                   IsRevoked = s.IsRevoked,
-                                                   RefreshToken = s.RefreshToken
-                                               })
                                                .ToListAsync();
         }
 
@@ -121,7 +82,7 @@ namespace SecureMessageManager.Api.Repositories.User
         /// Асинхронно обновляет несколько сессий.
         /// </summary>
         /// <param name="sessions">Коллекция сессий для обновления.</param>
-        public async Task UpdateSessionsRangeAsync(ICollection<GetSessionResponseDto> sessions)
+        public async Task UpdateSessionsRangeAsync(ICollection<Session> sessions)
         {
             _appDbContext.UpdateRange(sessions);
             await _appDbContext.SaveChangesAsync();
@@ -132,19 +93,9 @@ namespace SecureMessageManager.Api.Repositories.User
         /// </summary>
         /// <param name="userId">Id пользователя.</param>
         /// <returns>Коллекция активных сессий пользователя.</returns>
-        public async Task<ICollection<GetSessionResponseDto>> GetActiveUserSessionsAsync(Guid userId)
+        public async Task<ICollection<Session>> GetActiveUserSessionsAsync(Guid userId)
         {
             return await _appDbContext.Sessions.Where(s => s.UserId == userId && !s.IsRevoked)
-                                               .Select(s => new GetSessionResponseDto
-                                               {
-                                                   CreatedAt = s.CreatedAt,
-                                                   DeviceInfo = s.DeviceInfo,
-                                                   Id = s.Id,
-                                                   UserId = s.UserId,
-                                                   ExpiresAt = s.ExpiresAt,
-                                                   IsRevoked = s.IsRevoked,
-                                                   RefreshToken = s.RefreshToken
-                                               })
                                                .ToListAsync();
         }
 
@@ -153,19 +104,9 @@ namespace SecureMessageManager.Api.Repositories.User
         /// </summary>
         /// <param name="userId">Id пользователя.</param>
         /// <returns>Коллекция всех сессий пользователя.</returns>
-        public async Task<ICollection<GetSessionResponseDto>> GetUserSessionsAsync(Guid userId)
+        public async Task<ICollection<Session>> GetUserSessionsAsync(Guid userId)
         {
             return await _appDbContext.Sessions.Where(s => s.UserId == userId)
-                                               .Select(s => new GetSessionResponseDto
-                                               {
-                                                   CreatedAt = s.CreatedAt,
-                                                   DeviceInfo = s.DeviceInfo,
-                                                   Id = s.Id,
-                                                   UserId = s.UserId,
-                                                   ExpiresAt = s.ExpiresAt,
-                                                   IsRevoked = s.IsRevoked,
-                                                   RefreshToken = s.RefreshToken
-                                               })
                                                .ToListAsync();
         }
 
@@ -173,7 +114,7 @@ namespace SecureMessageManager.Api.Repositories.User
         /// Асинхронно удаляет сессию.
         /// </summary>
         /// <param name="session">Сесиия для удаления.</param>
-        public async Task RemoveSessionAsync(GetSessionResponseDto session)
+        public async Task RemoveSessionAsync(Session session)
         {
             var s = await _appDbContext.Sessions.FindAsync(session.Id);
             _appDbContext.Sessions.Remove(s);

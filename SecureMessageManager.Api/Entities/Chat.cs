@@ -27,9 +27,9 @@
         public bool IsGroup { get; set; }
 
         /// <summary>
-        /// Аватар чата.
+        /// Путь к аватару чата на сервере.
         /// </summary>
-        public byte[] Icon { get; set; }
+        public string? Icon { get; set; }
 
         /// <summary>
         /// Когда создан чат.
@@ -41,6 +41,16 @@
         /// Когда последний раз обновлялись данные чата.
         /// </summary>
         public DateTime UpdatedAt { get; set; }
+
+        /// <summary>
+        /// Id создателя чата.
+        /// </summary>
+        public Guid CreatorId { get; set; }
+
+        /// <summary>
+        /// Ссылка на создателя чата.
+        /// </summary>
+        public User Creator { get; set; }
 
         /// <summary>
         /// Список пользователей чата.

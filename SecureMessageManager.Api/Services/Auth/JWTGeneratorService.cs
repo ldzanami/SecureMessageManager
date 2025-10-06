@@ -43,7 +43,7 @@ namespace SecureMessageManager.Api.Services.Auth
         /// <param name="expiresAt">Когда истечёт.</param>
         /// <returns>Крткосрочный JWT токен.</returns>
         /// <exception cref="ArgumentNullException">User is null.</exception>
-        public string GenerateAccessToken(UserSecretsDto user, out DateTime expiresAt)
+        public string GenerateAccessToken(User user, out DateTime expiresAt)
         {
             ArgumentNullException.ThrowIfNull(user);
 

@@ -1,5 +1,4 @@
 ﻿using SecureMessageManager.Api.Entities;
-using SecureMessageManager.Shared.DTOs.Communication.Chats.Get.Response;
 
 namespace SecureMessageManager.Api.Repositories.Interfaces.Communication
 {
@@ -19,13 +18,28 @@ namespace SecureMessageManager.Api.Repositories.Interfaces.Communication
         /// </summary>
         /// <param name="chatId">Id чата.</param>
         /// <returns>GetChatResponseDto.</returns>
-        Task<GetChatResponseDto> GetChatInfoAsync(Guid chatId);
+        Task<Chat> GetChatInfoAsync(Guid chatId);
 
         /// <summary>
         /// Асинхронно получает чаты пользователя.
         /// </summary>
         /// <param name="userId">Id пользователя.</param>
         /// <returns>Коллекция чатов пользователя.</returns>
-        Task<ICollection<GetChatResponseDto>> GetUserChatsAsync(Guid userId);
+        Task<ICollection<Chat>> GetUserChatsAsync(Guid userId);
+
+        /// <summary>
+        /// Асинхронно получает коллекцию сообщений чата с пагинацией.
+        /// </summary>
+        /// <param name="chatId">Id чата.</param>
+        /// <param name="skip">С какого индекса начать.</param>
+        /// <param name="take">Сколько взять.</param>
+        /// <returns>Коллекция сообщений чата.</returns>
+        Task<ICollection<Message>> GetChatMessagesAsync(Guid chatId, int skip, int take);
+
+        /// <summary>
+        /// Асинхронно создаёт сообщение.
+        /// </summary>
+        /// <param name="message">Сообщение для создания.</param>
+        Task CreateMessageAsync(Message message);
     }
 }

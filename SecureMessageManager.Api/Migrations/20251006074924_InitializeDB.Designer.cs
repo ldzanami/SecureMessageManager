@@ -12,8 +12,8 @@ using SecureMessageManager.Api.Data;
 namespace SecureMessageManager.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251003140118_AddedChats")]
-    partial class AddedChats
+    [Migration("20251006074924_InitializeDB")]
+    partial class InitializeDB
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -27,20 +27,22 @@ namespace SecureMessageManager.Api.Migrations
 
             modelBuilder.Entity("SecureMessageManager.Api.Entities.Chat", b =>
                 {
-                    b.Property<Guid>("ChatId")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<Guid>("CreatorId")
+                        .HasColumnType("uuid");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<byte[]>("Icon")
-                        .IsRequired()
-                        .HasColumnType("bytea");
+                    b.Property<string>("Icon")
+                        .HasColumnType("text");
 
                     b.Property<bool>("IsGroup")
                         .HasColumnType("boolean");
@@ -52,7 +54,9 @@ namespace SecureMessageManager.Api.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.HasKey("ChatId");
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatorId");
 
                     b.ToTable("Chats");
                 });
@@ -225,9 +229,8 @@ namespace SecureMessageManager.Api.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<byte[]>("Icon")
-                        .IsRequired()
-                        .HasColumnType("bytea");
+                    b.Property<string>("Icon")
+                        .HasColumnType("text");
 
                     b.Property<bool>("IsOnline")
                         .HasColumnType("boolean");
@@ -260,6 +263,17 @@ namespace SecureMessageManager.Api.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("SecureMessageManager.Api.Entities.Chat", b =>
+                {
+                    b.HasOne("SecureMessageManager.Api.Entities.User", "Creator")
+                        .WithMany()
+                        .HasForeignKey("CreatorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Creator");
                 });
 
             modelBuilder.Entity("SecureMessageManager.Api.Entities.ChatMember", b =>

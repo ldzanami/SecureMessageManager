@@ -5,11 +5,17 @@ using Microsoft.OpenApi.Models;
 using SecureMessageManager.Api.Data;
 using SecureMessageManager.Api.Hubs;
 using SecureMessageManager.Api.Middlewares;
+using SecureMessageManager.Api.Repositories.Communication;
+using SecureMessageManager.Api.Repositories.Helpers;
+using SecureMessageManager.Api.Repositories.Interfaces.Communication;
+using SecureMessageManager.Api.Repositories.Interfaces.Helpers;
 using SecureMessageManager.Api.Repositories.Interfaces.User;
 using SecureMessageManager.Api.Repositories.User;
 using SecureMessageManager.Api.Services.Auth;
+using SecureMessageManager.Api.Services.Communication;
 using SecureMessageManager.Api.Services.Encriptoin;
 using SecureMessageManager.Api.Services.Interfaces.Auth;
+using SecureMessageManager.Api.Services.Interfaces.Communication;
 using SecureMessageManager.Api.Services.Interfaces.Encription;
 using System.Text;
 
@@ -110,6 +116,9 @@ namespace SecureMessageManager.Api
             builder.Services.AddScoped<ISessionRepository, SessionRepository>();
             builder.Services.AddScoped<IGeneratorService, GeneratorService>();
             builder.Services.AddScoped<IPasswordHashService, PasswordHashService>();
+            builder.Services.AddScoped<ICheckExistRepository, CheckExistRepository>();
+            builder.Services.AddScoped<IChatRepository, ChatRepository>();
+            builder.Services.AddScoped<IChatService, ChatService>();
             builder.Services.AddSignalR();
 
 

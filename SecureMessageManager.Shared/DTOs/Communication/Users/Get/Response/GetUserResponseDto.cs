@@ -23,9 +23,9 @@ namespace SecureMessageManager.Shared.DTOs.Communication.Users.Get.Response
         public required string Username { get; set; }
 
         /// <summary>
-        /// Аватар пользователя.
+        /// Путь к аватару пользователя на сервере.
         /// </summary>
-        public byte[] Icon { get; set; }
+        public string? Icon { get; set; }
 
         /// <summary>
         /// Публичный RSA ключ пользователя.

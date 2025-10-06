@@ -14,21 +14,26 @@ namespace SecureMessageManager.Shared.DTOs.Communication.Messages.Post.Incoming
         /// <summary>
         /// Id чата.
         /// </summary>
-        public string ChatId { get; set; }
+        public Guid ChatId { get; set; }
 
         /// <summary>
         /// Id отправителя.
         /// </summary>
-        public string UserId { get; set; }
+        public Guid SenderId { get; set; }
 
         /// <summary>
         /// Зашифрованное содержимое сообщения.
         /// </summary>
-        public string ContentEnc { get; set; }
+        public byte[] ContentEnc { get; set; }
+
+        /// <summary>
+        /// Зашифрованный AES ключ от сообщения.
+        /// </summary>
+        public byte[] AESKeyEnc { get; set; }
 
         /// <summary>
         /// Когда было отправлено.
         /// </summary>
-        public DateTime SentAt { get; set; } = DateTime.Now;
+        public DateTime SentAt { get; set; }
     }
 }

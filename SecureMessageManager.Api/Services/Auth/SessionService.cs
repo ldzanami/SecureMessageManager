@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SecureMessageManager.Api.Data;
 using SecureMessageManager.Api.Entities;
+using SecureMessageManager.Api.Repositories.Helpers;
+using SecureMessageManager.Api.Repositories.Interfaces.Helpers;
 using SecureMessageManager.Api.Repositories.Interfaces.User;
 using SecureMessageManager.Api.Services.Interfaces.Auth;
 using SecureMessageManager.Shared.DTOs.Auth.Post.Response;
@@ -16,6 +18,7 @@ namespace SecureMessageManager.Api.Services.Auth
         private readonly TimeSpan _refreshLifetime;
         private readonly ISessionRepository _sessionRepository;
         private readonly IUserRepository _userRepository;
+        private readonly ICheckExistRepository _checkExistRepository;
 
         /// <summary>
         /// Конструктор класса.
@@ -23,14 +26,21 @@ namespace SecureMessageManager.Api.Services.Auth
         /// <param name="sessionRepository">For DI.</param>
         /// <param name="jwtGeneratorService">For DI.</param>
         /// <param name="configuration">For DI.</param>
+        /// <param name="userRepository">For DI.</param>
+        /// <param name="checkExistRepository">For DI.</param>
         /// <exception cref="ArgumentNullException">DI не передал компоненты.</exception>
-        public SessionService(ISessionRepository sessionRepository, IJWTGeneratorService jwtGeneratorService, IConfiguration configuration, IUserRepository userRepository)
+        public SessionService(ISessionRepository sessionRepository,
+                              IJWTGeneratorService jwtGeneratorService,
+                              IConfiguration configuration,
+                              IUserRepository userRepository,
+                              ICheckExistRepository checkExistRepository)
         {
             _sessionRepository = sessionRepository ?? throw new ArgumentNullException(nameof(sessionRepository));
             _jwtGeneratorService = jwtGeneratorService ?? throw new ArgumentNullException(nameof(jwtGeneratorService));
             var refreshTokenLifetimeDays = int.Parse(configuration["Jwt:RefreshTokenLifetimeDays"] ?? "7");
             _refreshLifetime = TimeSpan.FromDays(refreshTokenLifetimeDays);
             _userRepository = userRepository;
+            _checkExistRepository = checkExistRepository;
         }
 
         /// <summary>
@@ -39,8 +49,9 @@ namespace SecureMessageManager.Api.Services.Auth
         /// <param name="user">Пользователь сессии.</param>
         /// <param name="deviceInfo">Информация об устройстве.</param>
         /// <returns>Access + refresh токены и id сессии.</returns>
-        public async Task<(string AccessToken, string RefreshToken, Guid SessionId)> CreateSessionAsync(UserSecretsDto user, string deviceInfo)
+        public async Task<(string AccessToken, string RefreshToken, Guid SessionId)> CreateSessionAsync(User user, string deviceInfo)
         {
+            await _checkExistRepository.IsUserExist(user.Id);
             var access = _jwtGeneratorService.GenerateAccessToken(user, out _);
             var refreshPlain = _jwtGeneratorService.GenerateRefreshToken();
             var refreshHash = _jwtGeneratorService.HashToken(refreshPlain);
@@ -72,7 +83,9 @@ namespace SecureMessageManager.Api.Services.Auth
 
             var session = await _sessionRepository.GetSessionByRefreshHashAsync(incomingHash);
 
-            var userSecrets = await _userRepository.GetSecretsAsync(session.UserId);
+            await _checkExistRepository.IsUserExist(session.UserId);
+
+            var user = await _userRepository.GetUserByIdAsync(session.UserId);
 
             if (session == null) throw new UnauthorizedAccessException("Refresh токен не найден");
             if (session.IsRevoked) throw new UnauthorizedAccessException("Refresh токен отозван");
@@ -84,7 +97,7 @@ namespace SecureMessageManager.Api.Services.Auth
 
             await _sessionRepository.UpdateSessionAsync(session);
 
-            var access = _jwtGeneratorService.GenerateAccessToken(userSecrets, out _);
+            var access = _jwtGeneratorService.GenerateAccessToken(user, out _);
             return (access, newRefreshPlain, session.Id);
         }
 
@@ -94,8 +107,8 @@ namespace SecureMessageManager.Api.Services.Auth
         /// <param name="sessionId">Id сессии, которую надо прервать.</param>
         public async Task RevokeSessionAsync(Guid sessionId)
         {
+            await _checkExistRepository.IsSessionExist(sessionId);
             var session = await _sessionRepository.GetSessionByIdAsync(sessionId);
-            if (session == null) return;
             session.IsRevoked = true;
             await _sessionRepository.UpdateSessionAsync(session);
         }
@@ -107,6 +120,8 @@ namespace SecureMessageManager.Api.Services.Auth
         /// <param name="keepSessionId">Id сессии, которую нужно оставить.</param>
         public async Task RevokeOtherSessionsAsync(Guid userId, Guid keepSessionId)
         {
+            await _checkExistRepository.IsUserExist(userId);
+            await _checkExistRepository.IsSessionExist(keepSessionId);
             var sessions = await _sessionRepository.GetAllUserSessionsExcludingSpecifiedAndRevokedAsync(userId, keepSessionId);
 
             foreach (var s in sessions) s.IsRevoked = true;
@@ -119,6 +134,7 @@ namespace SecureMessageManager.Api.Services.Auth
         /// <param name="userId">Id пользователя.</param>
         public async Task RevokeAllSessionsAsync(Guid userId)
         {
+            await _checkExistRepository.IsUserExist(userId);
             var sessions = await _sessionRepository.GetUserSessionsExcludingRevokedAsync(userId);
 
             foreach (var s in sessions) s.IsRevoked = true;
