@@ -12,11 +12,6 @@ namespace SecureMessageManager.Shared.DTOs.Communication.Messages.Post.Incoming
     public class SendMessageDto
     {
         /// <summary>
-        /// Id чата.
-        /// </summary>
-        public Guid ChatId { get; set; }
-
-        /// <summary>
         /// Id отправителя.
         /// </summary>
         public Guid SenderId { get; set; }

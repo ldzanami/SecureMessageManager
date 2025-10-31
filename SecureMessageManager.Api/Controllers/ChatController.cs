@@ -2,15 +2,16 @@
 using Microsoft.AspNetCore.Mvc;
 using SecureMessageManager.Api.Services.Interfaces.Communication;
 using SecureMessageManager.Shared.DTOs.Communication.Chats.Post.Incoming;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace SecureMessageManager.Api.Controllers
 {
     /// <summary>
     /// Контроллер, отвечающий за работу с чатами.
     /// </summary>
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize]
     public class ChatController(IChatService chatService) : ControllerBase
     {
         private readonly IChatService _chatService = chatService;
@@ -20,8 +21,8 @@ namespace SecureMessageManager.Api.Controllers
         /// </summary>
         /// <param name="dto">Данные для создания чата.</param>
         /// <returns>201 Созданное сообщение - ChatCreatedResponseDto.</returns>
-        [HttpPost("create")]
-        public async Task<IActionResult> CreateChat(CreateChatDto dto)
+        [HttpPost]
+        public async Task<IActionResult> CreateChat([FromBody] CreateChatDto dto)
         {
             var response = await _chatService.CreateChatAsync(dto);
             return CreatedAtAction(nameof(CreateChat), response);
@@ -30,12 +31,24 @@ namespace SecureMessageManager.Api.Controllers
         /// <summary>
         /// Get запрос на получение информации о чате.
         /// </summary>
-        /// <param name="chatId">Id чата.</param>
+        /// <param name="id">Id чата.</param>
         /// <returns>200 Информацию о чате - GetChatResponseDto.</returns>
-        [HttpGet("info")]
-        public async Task<IActionResult> GetChatInfo(Guid chatId)
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetChatInfo([FromRoute] Guid id)
         {
-            var response = await _chatService.GetChatInfoAsync(chatId);
+            var response = await _chatService.GetChatInfoAsync(id);
+            return Ok(response);
+        }
+
+        /// <summary>
+        /// Get запрос на получение своих чатов.
+        /// </summary>
+        /// <returns>200 Коллекция своих чатов - ICollection(GetChatResponseDto).</returns>
+        [HttpGet]
+        public async Task<IActionResult> GetMyChats()
+        {
+            var id = Guid.Parse(User.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Sub).Value);
+            var response = await _chatService.GetUserChatsAsync(id);
             return Ok(response);
         }
     }

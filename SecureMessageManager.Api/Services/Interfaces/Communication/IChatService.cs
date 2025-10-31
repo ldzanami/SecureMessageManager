@@ -33,21 +33,5 @@ namespace SecureMessageManager.Api.Services.Interfaces.Communication
         /// <param name="userId">Id пользователя.</param>
         /// <returns>Коллекция чатов пользователя.</returns>
         Task<ICollection<GetChatResponseDto>> GetUserChatsAsync(Guid userId);
-
-        /// <summary>
-        /// Асинхронно получает коллекцию сообщений чата с пагинацией.
-        /// </summary>
-        /// <param name="chatId">Id чата.</param>
-        /// <param name="skip">С какого индекса начать.</param>
-        /// <param name="take">Сколько взять.</param>
-        /// <returns>Коллекция сообщений чата.</returns>
-        Task<ICollection<GetMessageResponseDto>> GetChatMessagesAsync(Guid chatId, int skip, int take);
-
-        /// <summary>
-        /// Асинхронно создаёт сообщение.
-        /// </summary>
-        /// <param name="dto">Данные сообщения.</param>
-        /// <returns>MessageCreatedResponseDto.</returns>
-        Task<MessageCreatedResponseDto> CreateMessageAsync(SendMessageDto dto);
     }
 }

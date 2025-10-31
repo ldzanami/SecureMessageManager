@@ -48,7 +48,7 @@ namespace SecureMessageManager.Api.Entities
         /// Изменялось ли сообщение.
         /// </summary>
         /// <remarks>Автозаполняется.</remarks>
-        public bool IsUpdated { get; set; }
+        public bool IsUpdated { get; set; } = false;
 
         /// <summary>
         /// Было ли сообщение прочитано.

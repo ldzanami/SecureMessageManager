@@ -26,20 +26,5 @@ namespace SecureMessageManager.Api.Repositories.Interfaces.Communication
         /// <param name="userId">Id пользователя.</param>
         /// <returns>Коллекция чатов пользователя.</returns>
         Task<ICollection<Chat>> GetUserChatsAsync(Guid userId);
-
-        /// <summary>
-        /// Асинхронно получает коллекцию сообщений чата с пагинацией.
-        /// </summary>
-        /// <param name="chatId">Id чата.</param>
-        /// <param name="skip">С какого индекса начать.</param>
-        /// <param name="take">Сколько взять.</param>
-        /// <returns>Коллекция сообщений чата.</returns>
-        Task<ICollection<Message>> GetChatMessagesAsync(Guid chatId, int skip, int take);
-
-        /// <summary>
-        /// Асинхронно создаёт сообщение.
-        /// </summary>
-        /// <param name="message">Сообщение для создания.</param>
-        Task CreateMessageAsync(Message message);
     }
 }
