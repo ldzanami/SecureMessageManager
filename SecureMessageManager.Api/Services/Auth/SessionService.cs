@@ -6,6 +6,7 @@ using SecureMessageManager.Api.Repositories.Interfaces.Helpers;
 using SecureMessageManager.Api.Repositories.Interfaces.User;
 using SecureMessageManager.Api.Services.Interfaces.Auth;
 using SecureMessageManager.Shared.DTOs.Auth.Post.Response;
+using SecureMessageManager.Shared.DTOs.Auxiliary.DeviceInfo;
 
 namespace SecureMessageManager.Api.Services.Auth
 {

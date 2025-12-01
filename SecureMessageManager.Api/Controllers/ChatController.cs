@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using SecureMessageManager.Api.Services.Interfaces.Communication;
 using SecureMessageManager.Shared.DTOs.Communication.Chats.Post.Incoming;
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace SecureMessageManager.Api.Controllers
 {
@@ -47,7 +48,7 @@ namespace SecureMessageManager.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> GetMyChats()
         {
-            var id = Guid.Parse(User.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Sub).Value);
+            var id = Guid.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);
             var response = await _chatService.GetUserChatsAsync(id);
             return Ok(response);
         }

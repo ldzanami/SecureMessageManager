@@ -1,5 +1,6 @@
 ﻿using SecureMessageManager.Api.Entities;
 using SecureMessageManager.Shared.DTOs.Auth.Post.Response;
+using SecureMessageManager.Shared.DTOs.Auxiliary.DeviceInfo;
 
 namespace SecureMessageManager.Api.Services.Interfaces.Auth
 {

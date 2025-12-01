@@ -6,6 +6,7 @@ using SecureMessageManager.Shared.DTOs.Auth.Post.Incoming;
 using SecureMessageManager.Shared.DTOs.Auth.Post.Response;
 using SecureMessageManager.Shared.DTOs.Auxiliary.DeviceInfo;
 using SecureMessageManager.Shared.DTOs.Communication.Users.Get.Response;
+using System.Security.AccessControl;
 
 namespace SecureMessageManager.Api.Services.Auth
 {
@@ -92,7 +93,7 @@ namespace SecureMessageManager.Api.Services.Auth
             {
                 (accessToken, refreshToken, sessionId) = await _sessionService.CreateSessionAsync(user, deviceInfo);
             }
-            else if((DeviceInfoDto)session.DeviceInfo != deviceInfo)
+            else if((DeviceInfoDto)session.DeviceInfo != deviceInfo || dto.RefreshToken == null)
             {
                 await _sessionRepository.RemoveSessionAsync(session);
                 (accessToken, refreshToken, sessionId) = await _sessionService.CreateSessionAsync(user, deviceInfo);
@@ -104,14 +105,14 @@ namespace SecureMessageManager.Api.Services.Auth
                 await _sessionRepository.UpdateSessionAsync(session);
             }
 
-            return new AuthResponseDto
-            {
-                SessionId = sessionId,
-                AccessToken = accessToken,
-                RefreshToken = refreshToken,
-                UserId = user.Id,
-                Username = user.Username
-            };
+                return new AuthResponseDto
+                {
+                    SessionId = sessionId,
+                    AccessToken = accessToken,
+                    RefreshToken = refreshToken,
+                    UserId = user.Id,
+                    Username = user.Username
+                };
 
         }
 

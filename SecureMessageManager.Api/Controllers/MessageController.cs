@@ -48,7 +48,7 @@ namespace SecureMessageManager.Api.Controllers
         /// </summary>
         /// <param name="mesId">Id сообщения.</param>
         /// <param name="patch">Изменённое сообщение.</param>
-        [HttpPatch("{chatId}/{mesId}")]
+        [HttpPatch("{mesId}")]
         public async Task<IActionResult> PatchMessage([FromRoute] Guid mesId, [FromBody] PatchMessageDto patch)
         {
             await _messageService.PatchMessageAsync(mesId, patch);
@@ -59,7 +59,7 @@ namespace SecureMessageManager.Api.Controllers
         /// Delete запрос на удаление сообщения.
         /// </summary>
         /// <param name="mesId">Id сообщения.</param>
-        [HttpDelete("{chatId}/{mesId}")]
+        [HttpDelete("{mesId}")]
         public async Task<IActionResult> DeleteMessage([FromRoute] Guid mesId)
         {
             await _messageService.DeleteMessageAsync(mesId);

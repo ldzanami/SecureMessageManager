@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using SecureMessageManager.Api.Services.Interfaces.Communication;
-using SecureMessageManager.Shared.DTOs.Communication.Messages.Post.Incoming;
+using SecureMessageManager.Shared.DTOs.Communication.Messages.Post.Response;
 
 namespace SecureMessageManager.Api.Hubs
 {
@@ -38,12 +38,12 @@ namespace SecureMessageManager.Api.Hubs
         /// <param name="contentEnc">Зашифрованное сообщение.</param>
         public async Task SendMessage(Guid chatId, Guid senderId, byte[] contentEnc)
         {
-            await Clients.Group(chatId.ToString()).SendAsync("ReceiveMessage", new SendMessageDto
+            await Clients.Group(chatId.ToString()).SendAsync("ReceiveMessage", new MessageCreatedResponseDto
             {
                 ChatId = chatId,
                 SenderId = senderId,
                 ContentEnc = contentEnc,
-                SentAt = DateTime.UtcNow
+                CreatedAt = DateTime.UtcNow
             });
         }
     }
